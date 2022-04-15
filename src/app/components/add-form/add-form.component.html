@@ -1,0 +1,259 @@
+<div class="add-form">
+  <div class="add-form__container">
+    <form
+      class="add-form__document-form"
+      [formGroup]="documentForm"
+      (change)="onDocumentChange()"
+    >
+      <div>
+        <input
+          class="add-form__document-input"
+          type="radio"
+          formControlName="document"
+          name="document"
+          value="films"
+          [checked]="document === 'films'"
+        /><label>Movie</label>
+      </div>
+      <div>
+        <input
+          class="add-form__document-input"
+          type="radio"
+          formControlName="document"
+          name="document"
+          value="books"
+          [checked]="document === 'books'"
+        /><label>Book</label>
+      </div>
+    </form>
+    <form
+      class="add-form__form form"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit(document)"
+    >
+      <input
+        type="text"
+        placeholder="Title"
+        class="form__input"
+        formControlName="title"
+        required
+      />
+      <p
+        class="error-message"
+        *ngIf="form.get('title')?.invalid && form.get('title')?.touched"
+      >
+        <span *ngIf="form.get('title')!.errors!['required']">
+          Title field must not be empty
+        </span>
+      </p>
+      <input
+        type="text"
+        placeholder="Description"
+        class="form__input"
+        formControlName="description"
+      />
+      <input
+        type="text"
+        placeholder="Year"
+        class="form__input"
+        formControlName="released"
+      />
+      <p
+        class="error-message"
+        *ngIf="form.get('released')?.invalid && form.get('released')?.touched"
+      >
+        <span *ngIf="form.get('released')!.errors!['pattern']">
+          Year field must have 4 numbers (e.g., 1996)
+        </span>
+      </p>
+      <input
+        type="url"
+        placeholder="Website"
+        class="form__input"
+        formControlName="website"
+      />
+      <p
+        class="error-message"
+        *ngIf="form.get('website')?.invalid && form.get('website')?.touched"
+      >
+        <span *ngIf="form.get('website')!.errors!['pattern']">
+          Website field must of http format (e.g., https://www.youtube.com/)
+        </span>
+      </p>
+      <select name="genre" class="form__input" formControlName="genre" required>
+        <option *ngFor="let genre of genres" value="{{genre}}">{{genre}}</option>
+      </select>
+      <div class="form__rating">
+        <div class="rating-group">
+          <input
+            disabled
+            checked
+            class="rating__input rating__input--none"
+            name="rating"
+            id="rating-none"
+            value="0"
+            type="radio"
+          />
+          <label class="rating__label" for="rating-1"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-1"
+            value="1"
+            type="radio"
+            #rating1
+            (click)="setRating(rating1.value)"
+          />
+          <label class="rating__label" for="rating-2"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-2"
+            value="2"
+            type="radio"
+            #rating2
+            (click)="setRating(rating2.value)"
+          />
+          <label class="rating__label" for="rating-3"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-3"
+            value="3"
+            type="radio"
+            #rating3
+            (click)="setRating(rating3.value)"
+          />
+          <label class="rating__label" for="rating-4"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-4"
+            value="4"
+            type="radio"
+            #rating4
+            (click)="setRating(rating4.value)"
+          />
+          <label class="rating__label" for="rating-5"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-5"
+            value="5"
+            type="radio"
+            #rating5
+            (click)="setRating(rating5.value)"
+          />
+          <label class="rating__label" for="rating-6"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-6"
+            value="6"
+            type="radio"
+            #rating6
+            (click)="setRating(rating6.value)"
+          />
+          <label class="rating__label" for="rating-7"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-7"
+            value="7"
+            type="radio"
+            #rating7
+            (click)="setRating(rating7.value)"
+          />
+          <label class="rating__label" for="rating-8"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-8"
+            value="8"
+            type="radio"
+            #rating8
+            (click)="setRating(rating8.value)"
+          />
+          <label class="rating__label" for="rating-9"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-9"
+            value="9"
+            type="radio"
+            #rating9
+            (click)="setRating(rating9.value)"
+          />
+          <label class="rating__label" for="rating-10"
+            ><fa-icon
+              class="rating__icon rating__icon--star fa fa-star"
+              [icon]="faStar"
+            ></fa-icon
+          ></label>
+          <input
+            class="rating__input"
+            name="rating"
+            id="rating-10"
+            value="10"
+            type="radio"
+            #rating10
+            (click)="setRating(rating10.value)"
+          />
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="form__button"
+        [disabled]="form.invalid || documentForm.invalid"
+      >
+        Add
+      </button>
+    </form>
+    <notifier-container></notifier-container>
+  </div>
+</div>

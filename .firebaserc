@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "shelf-optimiser"
+  },
+  "targets": {
+    "shelf-optimiser": {
+      "hosting": {
+        "Shelf-Optimiser": [
+          "shelf-optimiser"
+        ]
+      }
+    }
+  }
+}

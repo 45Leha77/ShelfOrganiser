@@ -1,0 +1,59 @@
+<div class="auth-form">
+  <div class="auth-form__container">
+    <form class="auth-form form" [formGroup]="authForm" (ngSubmit)="onSubmit()">
+      <h1 class="form__title">Log In</h1>
+      <div class="form__email">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          name="email"
+          class="form__input"
+          formControlName="email"
+        />
+        <p
+          class="error-message"
+          *ngIf="
+            authForm.get('email')?.invalid && authForm.get('email')?.touched
+          "
+        >
+          <span *ngIf="authForm.get('email')!.errors!['required']">
+            Email field must not be empty
+          </span>
+          <span *ngIf="authForm.get('email')!.errors!['email']">
+            Wrong email format
+          </span>
+        </p>
+      </div>
+      <div class="form__pass">
+        <label for="pass">Password</label>
+        <input
+          autocomplete="off"
+          type="password"
+          name="pass"
+          class="form__input"
+          formControlName="password"
+        />
+        <p
+          class="error-message"
+          *ngIf="
+            authForm.get('password')?.invalid &&
+            authForm.get('password')?.touched
+          "
+        >
+          <span *ngIf="authForm.get('password')!.errors!['required']">
+            Password field must not be empty
+          </span>
+          <span *ngIf="authForm.get('password')!.errors!['minlength']">
+            Password must contain at least 6 symbols
+          </span>
+        </p>
+      </div>
+      <button type="submit" class="form__button" [disabled]="authForm.invalid">
+        Log In
+      </button>
+      <p class="error-message" *ngIf="authError">
+        {{ authError }}
+      </p>
+    </form>
+  </div>
+</div>

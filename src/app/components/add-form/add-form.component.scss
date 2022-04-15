@@ -1,0 +1,159 @@
+.add-form {
+  height: fit-content;
+  min-height: calc(100vh - 100px);
+  background-color: rgba(100, 173, 161, 0.644);
+  border-radius: 4px;
+  // .add-form__container
+
+  &__container {
+    padding: 1% 100px;
+  }
+
+  &__document-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    font-size: 23px;
+    font-weight: 900;
+    color: rgb(2, 96, 80);
+    input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #999;
+      transition: 0.3s all linear;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+
+    input:checked {
+      border: 6px solid rgb(2, 96, 80);
+    }
+  }
+  // .add-form__form
+
+  &__form {
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+  }
+}
+.form {
+  // .form__input
+  &__input {
+    width: 30%;
+    border: none;
+    border-radius: 4px;
+    padding: 15px 20px;
+    font-size: 18px;
+    @media (any-hover: hover) {
+      &:hover {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+    }
+    @media (max-width: 1100px) {
+      width: 60%;
+    }
+    @media (max-width: 650px) {
+      width: 100%;
+    }
+    @media (max-width: 550px) {
+      width: 120%;
+    }
+  }
+  &__button {
+    all: unset;
+    width: fit-content;
+    text-align: center;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: rgb(6, 119, 100);
+    padding: 5px 40px;
+    border-radius: 4px;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    @media (any-hover: hover) {
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+  &__rating {
+    /* use display:inline-flex to prevent whitespace issues. alternatively, you can put all the children of .rating-group on a single line */
+    .rating-group {
+      display: inline-flex;
+    }
+
+    /* hide radio inputs */
+    .rating__input {
+      position: absolute !important;
+      left: -9999px !important;
+    }
+
+    /* hide 'none' input from screenreaders */
+    .rating__input--none {
+      display: none;
+    }
+
+    /* set icon padding and size */
+    .rating__label {
+      cursor: pointer;
+      padding: 0 0.1em;
+      font-size: 2rem;
+      @media(max-width: 500px) { 
+      font-size: 1.5rem;
+       }
+    }
+
+    /* set default star color */
+    .rating__icon--star {
+      color: orange;
+    }
+
+    /* if any input is checked, make its following siblings grey */
+    .rating__input:checked ~ .rating__label .rating__icon--star {
+      color: #ddd;
+    }
+
+    /* make all stars orange on rating group hover */
+    .rating-group:hover .rating__label .rating__icon--star {
+      color: orange;
+    }
+
+    /* make hovered input's following siblings grey on hover */
+    .rating__input:hover ~ .rating__label .rating__icon--star {
+      color: #ddd;
+    }
+  }
+}
+input {
+  &.ng-invalid {
+    &.ng-touched {
+      border: 2px solid rgba(248, 5, 5, 0.3);
+    }
+  }
+}
+.error-message {
+  color: red;
+}
+button:disabled,
+button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  @media (any-hover: hover) {
+    &:hover {
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+    }
+  }
+}

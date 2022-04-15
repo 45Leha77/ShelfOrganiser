@@ -1,0 +1,20 @@
+<div class="header">
+  <div class="header__container">
+    <a [routerLink]="'/movies'" class="header__item">Movies</a>
+    <input
+      *ngIf="
+        this.route.url !== '/add' &&
+        this.route.url !== '/add?doc=books' &&
+        this.route.url !== '/add?doc=films' &&
+        !this.activatedRoute.snapshot.queryParams['id']
+      "
+      type="text"
+      name="search"
+      #search
+      placeholder="search"
+      class="header__input"
+      (keyup)="onSubmit(search)"
+    />
+    <a [routerLink]="'/books'" class="header__item">Books</a>
+  </div>
+</div>

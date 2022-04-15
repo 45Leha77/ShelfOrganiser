@@ -1,0 +1,134 @@
+<div class="movie-page" (click)="closeModal()">
+  <div class="movie-page__container">
+    <div class="movie-page__buttons">
+      <button
+        class="movie-page__button start-button"
+        type="button"
+        *ngIf="this.currentStatus === 'wish'"
+        (click)="startReading()"
+      >
+        Start watching
+      </button>
+      <button
+        class="movie-page__button finish-button"
+        type="button"
+        *ngIf="this.currentStatus === 'inProgress'"
+        (click)="finishReading()"
+      >
+        Finish watching
+      </button>
+      <button
+        class="movie-page__button delete-button"
+        type="button"
+        (click)="openModal(movie.id, $event)"
+      >
+        Delete
+      </button>
+    </div>
+    <div class="movie-page__main">
+      <img
+        src="../../../assets/images/coverBackground2.jpg"
+        alt="coverPhoto"
+        class="movie-page__background-photo"
+      />
+      <div class="movie-page__main-side main-side">
+        <span class="main-side__block-title">Title</span>
+        <div
+          class="main-side__title block-style"
+          id="title"
+          (dblclick)="permitEdit($event)"
+          (blur)="stopEditing($event, movie.id, validator.isValidTitle($event))"
+        >
+          {{ movie?.title }}
+        </div>
+        <span class="main-side__block-title">Description</span>
+        <div
+          class="main-side__description block-style"
+          id="description"
+          (dblclick)="permitEdit($event)"
+          (blur)="stopEditing($event, movie.id)"
+        >
+          {{ movie?.description }}
+        </div>
+        <span class="main-side__block-title">Website</span>
+        <div
+          class="main-side__website block-style"
+          id="website"
+          (dblclick)="permitEdit($event)"
+          (blur)="
+            stopEditing($event, movie.id, validator.isValidWebsite($event))
+          "
+        >
+          <a href="{{ movie?.website }}">{{ movie?.website }}</a>
+        </div>
+      </div>
+      <div class="movie-page__sub-side sub-side">
+        <span class="sub-side__block-title">Rating</span>
+        <div
+          class="sub-side__rating block-style text-center"
+          id="rating"
+          (dblclick)="permitEdit($event)"
+          (blur)="stopEditing($event, movie.id, validator.isValidRating($event))"
+        >
+          {{ movie?.rating }}
+        </div>
+        <span class="sub-side__block-title">Year</span>
+        <div
+          class="sub-side__year block-style text-center"
+          id="released"
+          (dblclick)="permitEdit($event)"
+          (blur)="stopEditing($event, movie.id, validator.isValidYear($event))"
+        >
+          {{ movie?.released }}
+        </div>
+        <span class="sub-side__block-title">Genre</span>
+        <select
+            name="genre"
+            id="genre"
+            #select
+            class="sub-side__genre block-style text-center"
+            (change)="test(movie.id,select)"
+          >
+            <option *ngFor="let genre of genres" value="{{genre}}" [selected]="genre === movie?.genre">{{genre}}</option>
+          </select>
+        <span class="sub-side__block-title">Status</span>
+        <div
+          class="sub-side__status text-center block-style"
+          *ngIf="movie?.status"
+          [ngStyle]="{ 'background-color': getStatusBlockColor() }"
+        >
+          <span *ngIf="movie.status === 'wish'">Wish</span>
+          <span *ngIf="movie.status === 'inProgress'">Reading now</span>
+          <span *ngIf="movie.status === 'finished'">Finished</span>
+        </div>
+        <span *ngIf="this.currentStatus === 'inProgress'" class="sub-side__block-title">Current page</span>
+        <div
+          class="sub-side__page block-style text-center"
+          *ngIf="this.currentStatus === 'inProgress'"
+          id="currentPage"
+          (dblclick)="permitEdit($event)"
+          (blur)="
+            stopEditing($event, movie.id, validator.isValidCurrentPage($event))
+          "
+        >
+          {{ movie.currentMin }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <notifier-container></notifier-container>
+</div>
+<div class="modal" *ngIf="modalOpened">
+  <div class="modal__container">
+    <fa-icon
+      class="modal__delete-button"
+      [icon]="faClose"
+      (click)="closeModal()"
+    ></fa-icon>
+    <div class="modal__text">Do you really want to delete the movie?</div>
+    <div class="modal__buttons">
+      <button type="button" class="modal__button modal__button_yes" (click)="deleteMovie(this.currentId)" [routerLink]="'../../movies'">YES</button>
+      <button type="button" class="modal__button modal__button_no" (click)="closeModal()">NO</button>
+    </div>
+  </div>
+</div>
