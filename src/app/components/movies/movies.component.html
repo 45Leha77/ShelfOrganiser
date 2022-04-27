@@ -18,12 +18,30 @@
           [routerLink]="'movie'"
           [queryParams]="{ id: movie.id }"
         >
-        <span *ngIf="movie.status === 'wish'" [ngStyle]="{'color': 'rgba(6, 121, 15, 0.979)', 'font-weight':'bold'}">Wish</span>
-        <span *ngIf="movie.status === 'inProgress'" [ngStyle]="{'color': 'rgb(219, 144, 5)', 'font-weight':'bold'}">Watching now</span>
-        <span *ngIf="movie.status === 'finished'" [ngStyle]="{'color': 'rgba(215, 17, 17, 0.811)', 'font-weight':'bold'}">Finished</span>
+          <span
+            *ngIf="movie.status === 'wish'"
+            [ngStyle]="{
+              color: 'rgba(6, 121, 15, 0.979)',
+              'font-weight': 'bold'
+            }"
+            >Wish</span
+          >
+          <span
+            *ngIf="movie.status === 'inProgress'"
+            [ngStyle]="{ color: 'rgb(219, 144, 5)', 'font-weight': 'bold' }"
+            >Watching now</span
+          >
+          <span
+            *ngIf="movie.status === 'finished'"
+            [ngStyle]="{
+              color: 'rgba(215, 17, 17, 0.811)',
+              'font-weight': 'bold'
+            }"
+            >Finished</span
+          >
           <div class="movie__text">
             <h2 class="movie__title">{{ movie.title }}</h2>
-            <div class="movie__description">{{ movie.description }}</div>
+            <div class="movie__description">{{ movie.description! | cutText }}</div>
           </div>
           <div class="movie__rating">
             <fa-icon
@@ -34,7 +52,7 @@
             ><fa-icon
               class="movie__rating_empty"
               [icon]="faStar"
-              *ngFor="let item of createRangeOfStars(movie.rating,true)"
+              *ngFor="let item of createRangeOfStars(movie.rating, true)"
             ></fa-icon>
           </div>
         </div>
@@ -46,21 +64,14 @@
           [routerLink]="'/add'"
           [queryParams]="{ doc: 'films' }"
         ></fa-icon>
+      </div>
     </div>
+    <notifier-container></notifier-container>
   </div>
-  <notifier-container></notifier-container>
-</div>
-<div class="modal" *ngIf="modalOpened">
-  <div class="modal__container">
-    <fa-icon
-      class="modal__delete-button"
-      [icon]="faClose"
-      (click)="closeModal()"
-    ></fa-icon>
-    <div class="modal__text">Do you really want to delete the movie?</div>
-    <div class="modal__buttons">
-      <button type="button" class="modal__button modal__button_yes" (click)="deleteMovie(this.currentId)">YES</button>
-      <button type="button" class="modal__button modal__button_no" (click)="closeModal()">NO</button>
-    </div>
-  </div>
+  <app-modal-window
+    *ngIf="modalOpened"
+    (positiveAnswer)="deleteMovie(this.currentId)"
+    (nevativeAnswer)="closeModal()"
+    [blockItem]="'movie'"
+  ></app-modal-window>
 </div>

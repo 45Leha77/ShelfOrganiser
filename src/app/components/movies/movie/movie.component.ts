@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Movie,Genre, Status } from 'src/app/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { EditedContentValidatorService } from 'src/app/services/validation/edited-content-validator.service';
@@ -18,7 +18,8 @@ export class MovieComponent implements OnInit {
     private route: ActivatedRoute,
     public validator: EditedContentValidatorService,
     private notifierService: NotifierService,
-    private genresService: GenresService
+    private genresService: GenresService,
+    private router: Router
   ) {}
   id!: string;
   movie!: Movie;
@@ -42,6 +43,7 @@ export class MovieComponent implements OnInit {
   deleteMovie(id: string) {
     this.firebase.deleteData('films', id);
     this.closeModal();
+    this.router.navigate(['/movies']);
   }
   editBlock(doc: string, id: string, block: HTMLElement) {
     this.firebase.updateData(doc, id, {
@@ -66,9 +68,7 @@ export class MovieComponent implements OnInit {
   }
   stopEditing(event: any, id: string, validation?: any) {
     if (validation === false) {
-      // event.target.contentEditable = 'false';
-      // this.loadMovie(this.id);
-      location.reload(); // temporary
+      location.reload();
       return;
     }
     this.editBlock('films', id, event.target);
@@ -122,7 +122,7 @@ export class MovieComponent implements OnInit {
   closeModal() {
     this.modalOpened = false;
   }
-  test(id: string, input: HTMLSelectElement) {
+  editGenre(id: string, input: HTMLSelectElement) {
     this.editInputBlock('films', id, input);
   }
 }

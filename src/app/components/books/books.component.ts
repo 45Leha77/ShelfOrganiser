@@ -81,14 +81,13 @@ export class BooksComponent implements OnInit {
     }
     return new Array(num);
   }
-  openModal(id:string, event: any) {
-    this.currentId = '';
+  openModal(id: string, event: any) {
     this.currentId = id;
     this.modalOpened = true;
-    event.stopPropagation()
+    event.stopPropagation();
   }
   closeModal() {
-    if(this.modalOpened === true) {
+    if (this.modalOpened === true) {
       this.modalOpened = false;
     }
   }

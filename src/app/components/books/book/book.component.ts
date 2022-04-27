@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Book, Genre, Status } from 'src/app/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { EditedContentValidatorService } from 'src/app/services/validation/edited-content-validator.service';
@@ -20,6 +20,7 @@ export class BookComponent implements OnInit {
     public validator: EditedContentValidatorService,
     private notifierService: NotifierService,
     private genresService: GenresService,
+    private router: Router,
   ) {}
   id!: string;
   book!: Book;
@@ -43,6 +44,7 @@ export class BookComponent implements OnInit {
   deleteBook(id: string) {
     this.firebase.deleteData('books', id);
     this.closeModal();
+    this.router.navigate(['/books']);
   }
   editBlock(doc: string, id: string, block: HTMLElement) {
     this.firebase.updateData(doc, id, {
@@ -67,9 +69,7 @@ export class BookComponent implements OnInit {
   }
   stopEditing(event: any, id: string, validation?: any) {
     if (validation === false) {
-      // event.target.contentEditable = 'false';
-      // this.loadBook(this.id);
-      location.reload(); // temporary
+      location.reload();
       return;
     }
     this.editBlock('books', id, event.target);
@@ -115,7 +115,6 @@ export class BookComponent implements OnInit {
     }
   }
   openModal(id: string, event: any) {
-    this.currentId = '';
     this.currentId = id;
     this.modalOpened = true;
     event.stopPropagation();

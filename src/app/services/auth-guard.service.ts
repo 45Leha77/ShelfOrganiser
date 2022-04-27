@@ -4,13 +4,14 @@ import {
   CanActivate,
   RouterStateSnapshot,
   UrlTree,
+  Router
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FirebaseService } from './firebase.service';
 
 @Injectable() // чтобы добавлять в одни сервисы другие сервисы;
 export class AuthGuard implements CanActivate {
-  constructor(private firebaseService: FirebaseService) {}
+  constructor(private firebaseService: FirebaseService, private router: Router) {}
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -24,6 +25,7 @@ export class AuthGuard implements CanActivate {
         return true;
       } else {
         console.log('User has to be authorized')
+        this.router.navigate(['/']);
         return false;
       }
     });

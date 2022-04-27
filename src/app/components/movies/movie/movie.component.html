@@ -68,7 +68,9 @@
           class="sub-side__rating block-style text-center"
           id="rating"
           (dblclick)="permitEdit($event)"
-          (blur)="stopEditing($event, movie.id, validator.isValidRating($event))"
+          (blur)="
+            stopEditing($event, movie.id, validator.isValidRating($event))
+          "
         >
           {{ movie?.rating }}
         </div>
@@ -83,14 +85,20 @@
         </div>
         <span class="sub-side__block-title">Genre</span>
         <select
-            name="genre"
-            id="genre"
-            #select
-            class="sub-side__genre block-style text-center"
-            (change)="test(movie.id,select)"
+          name="genre"
+          id="genre"
+          #select
+          class="sub-side__genre block-style text-center"
+          (change)="editGenre(movie.id, select)"
+        >
+          <option
+            *ngFor="let genre of genres"
+            value="{{ genre }}"
+            [selected]="genre === movie?.genre"
           >
-            <option *ngFor="let genre of genres" value="{{genre}}" [selected]="genre === movie?.genre">{{genre}}</option>
-          </select>
+            {{ genre }}
+          </option>
+        </select>
         <span class="sub-side__block-title">Status</span>
         <div
           class="sub-side__status text-center block-style"
@@ -101,11 +109,15 @@
           <span *ngIf="movie.status === 'inProgress'">Reading now</span>
           <span *ngIf="movie.status === 'finished'">Finished</span>
         </div>
-        <span *ngIf="this.currentStatus === 'inProgress'" class="sub-side__block-title">Current page</span>
+        <span
+          *ngIf="this.currentStatus === 'inProgress'"
+          class="sub-side__block-title"
+          >Current Minute</span
+        >
         <div
           class="sub-side__page block-style text-center"
           *ngIf="this.currentStatus === 'inProgress'"
-          id="currentPage"
+          id="currentMin"
           (dblclick)="permitEdit($event)"
           (blur)="
             stopEditing($event, movie.id, validator.isValidCurrentPage($event))
@@ -113,22 +125,30 @@
         >
           {{ movie.currentMin }}
         </div>
+        <span
+          *ngIf="this.currentStatus === 'finished'"
+          class="sub-side__block-title"
+          >Finished year</span
+        >
+        <div
+          class="sub-side__page block-style text-center"
+          *ngIf="this.currentStatus === 'finished'"
+          id="doneYear"
+          (dblclick)="permitEdit($event)"
+          (blur)="
+            stopEditing($event, movie.id, validator.isValidYear($event))
+          "
+        >
+          {{ movie.doneYear }}
+        </div>
       </div>
     </div>
   </div>
   <notifier-container></notifier-container>
 </div>
-<div class="modal" *ngIf="modalOpened">
-  <div class="modal__container">
-    <fa-icon
-      class="modal__delete-button"
-      [icon]="faClose"
-      (click)="closeModal()"
-    ></fa-icon>
-    <div class="modal__text">Do you really want to delete the movie?</div>
-    <div class="modal__buttons">
-      <button type="button" class="modal__button modal__button_yes" (click)="deleteMovie(this.currentId)" [routerLink]="'../../movies'">YES</button>
-      <button type="button" class="modal__button modal__button_no" (click)="closeModal()">NO</button>
-    </div>
-  </div>
-</div>
+<app-modal-window
+  *ngIf="modalOpened"
+  (positiveAnswer)="deleteMovie(this.currentId)"
+  (nevativeAnswer)="closeModal()"
+  [blockItem]="'movie'"
+></app-modal-window>

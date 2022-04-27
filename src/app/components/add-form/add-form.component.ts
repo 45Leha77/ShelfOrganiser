@@ -53,7 +53,7 @@ export class AddFormComponent implements OnInit {
 
   updateRating() {
     this.form.patchValue({
-      rating: this.rating,
+      rating: this.rating || "",
     });
   }
 

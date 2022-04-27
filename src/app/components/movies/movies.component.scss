@@ -1,6 +1,6 @@
 .movies-page {
   height: fit-content;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 70px);
   background-color: rgba(100, 173, 161, 0.644);
   border-radius: 4px;
   position: relative;
@@ -103,8 +103,7 @@
   &__text {
     height: 80%;
     overflow: hidden;
-    padding-bottom: 7px;
-    margin-bottom: 15px;
+    padding-bottom: 10px;
   }
   // .book__title
 

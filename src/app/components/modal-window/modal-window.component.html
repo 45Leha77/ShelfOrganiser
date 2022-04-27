@@ -1,0 +1,14 @@
+<div class="modal">
+  <div class="modal__container">
+    <fa-icon
+      class="modal__delete-button"
+      [icon]="faClose"
+     (click)="closeModal()"
+    ></fa-icon>
+    <div class="modal__text">Do you really want to delete the {{blockItem}}?</div>
+    <div class="modal__buttons">
+      <button type="button" class="modal__button modal__button_yes" (click)="delete()">YES</button>
+      <button type="button" class="modal__button modal__button_no" (click)="closeModal()">NO</button>
+    </div>
+  </div>
+</div>

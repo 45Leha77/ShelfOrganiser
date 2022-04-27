@@ -82,20 +82,27 @@
           {{ book?.released }}
         </div>
         <span class="sub-side__block-title">Genre</span>
-          <select
-            name="genre"
-            id="genre"
-            #select
-            class="sub-side__genre block-style text-center"
-            (change)="test(book.id,select)"
+        <select
+          name="genre"
+          id="genre"
+          #select
+          class="sub-side__genre block-style text-center"
+          (change)="test(book.id, select)"
+        >
+          <option
+            *ngFor="let genre of genres"
+            value="{{ genre }}"
+            [selected]="genre === book?.genre"
           >
-            <option *ngFor="let genre of genres" value="{{genre}}" [selected]="genre === book?.genre">{{genre}}</option>
-          </select>
+            {{ genre }}
+          </option>
+        </select>
         <span class="sub-side__block-title">Status</span>
         <div
           class="sub-side__status text-center block-style"
           *ngIf="book?.status"
           [ngStyle]="{ 'background-color': getStatusBlockColor() }"
+          title="sdfsdf"
         >
           <span *ngIf="book.status === 'wish'">Wish</span>
           <span *ngIf="book.status === 'inProgress'">Reading now</span>
@@ -117,35 +124,30 @@
         >
           {{ book.currentPage }}
         </div>
+        <span
+          *ngIf="this.currentStatus === 'finished'"
+          class="sub-side__block-title"
+          >Finished year</span
+        >
+        <div
+          class="sub-side__page block-style text-center"
+          *ngIf="this.currentStatus === 'finished'"
+          id="doneYear"
+          (dblclick)="permitEdit($event)"
+          (blur)="
+            stopEditing($event, book.id, validator.isValidYear($event))
+          "
+        >
+          {{ book.doneYear }}
+        </div>
       </div>
     </div>
   </div>
   <notifier-container></notifier-container>
 </div>
-<div class="modal" *ngIf="modalOpened">
-  <div class="modal__container">
-    <fa-icon
-      class="modal__delete-button"
-      [icon]="faClose"
-      (click)="closeModal()"
-    ></fa-icon>
-    <div class="modal__text">Do you really want to delete the book?</div>
-    <div class="modal__buttons">
-      <button
-        type="button"
-        class="modal__button modal__button_yes"
-        (click)="deleteBook(this.currentId)"
-        [routerLink]="'../../books'"
-      >
-        YES
-      </button>
-      <button
-        type="button"
-        class="modal__button modal__button_no"
-        (click)="closeModal()"
-      >
-        NO
-      </button>
-    </div>
-  </div>
-</div>
+<app-modal-window
+  *ngIf="modalOpened"
+  (positiveAnswer)="deleteBook(this.currentId)"
+  (nevativeAnswer)="closeModal()"
+  [blockItem]="'book'"
+></app-modal-window>

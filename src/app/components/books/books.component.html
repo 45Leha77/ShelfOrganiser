@@ -23,7 +23,7 @@
         <span *ngIf="book.status === 'finished'" [ngStyle]="{'color': 'rgba(215, 17, 17, 0.811)', 'font-weight':'bold'}">Finished</span>
           <div class="book__text">
             <h2 class="book__title">{{ book.title }}</h2>
-            <div class="book__description">{{ book.description }}</div>
+            <div class="book__description">{{ book.description! | cutText }}</div>
           </div>
           <div class="book__rating">
             <fa-icon
@@ -51,17 +51,4 @@
   </div>
     <notifier-container></notifier-container>
 </div>
-<div class="modal" *ngIf="modalOpened">
-  <div class="modal__container">
-    <fa-icon
-      class="modal__delete-button"
-      [icon]="faClose"
-      (click)="closeModal()"
-    ></fa-icon>
-    <div class="modal__text">Do you really want to delete the book?</div>
-    <div class="modal__buttons">
-      <button type="button" class="modal__button modal__button_yes" (click)="deleteBook(this.currentId)">YES</button>
-      <button type="button" class="modal__button modal__button_no" (click)="closeModal()">NO</button>
-    </div>
-  </div>
-</div>
+<app-modal-window *ngIf="modalOpened" (positiveAnswer)="deleteBook(this.currentId)" (nevativeAnswer)="closeModal()" [blockItem]="'book'"></app-modal-window>

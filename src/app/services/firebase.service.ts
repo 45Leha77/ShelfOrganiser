@@ -111,9 +111,7 @@ export class FirebaseService {
   }
 
   logIn(email: string, pass: string) {
-    // let email = 'linuks454@gmail.com';
-    // let pass = '147814';
-    return signInWithEmailAndPassword(this.auth, email, pass).then((cred) => {
+    return signInWithEmailAndPassword(this.auth, email, pass).then(() => {
       this.isLoggedIn = true;
       sessionStorage.setItem('isLoggedIn', 'true');
     });
