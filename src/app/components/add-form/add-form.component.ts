@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { NotifierService } from 'angular-notifier';
 import { Genre } from 'src/app/models';
 import { GenresService } from 'src/app/services/genres.service';
+import { Store } from '@ngrx/store';
+import { addBook } from '../books/state/books.actions';
+import { addMovie } from '../movies/state/movies.actions';
 
 @Component({
   selector: 'app-add-form',
@@ -19,10 +21,10 @@ export class AddFormComponent implements OnInit {
   genres: Genre[] = this.genresService.genres;
 
   constructor(
-    private firebase: FirebaseService,
     private route: ActivatedRoute,
     private notifierService: NotifierService,
-    private genresService: GenresService
+    private genresService: GenresService,
+    private store: Store
   ) {}
   form!: FormGroup;
   documentForm!: FormGroup;
@@ -53,25 +55,24 @@ export class AddFormComponent implements OnInit {
 
   updateRating() {
     this.form.patchValue({
-      rating: this.rating || "",
+      rating: this.rating || '',
     });
   }
 
   sendData(document: string) {
-    this.firebase.sendData(document, {
+    const addedItem = {
       ...this.form.value,
       status: 'wish',
-    });
+    };
+    if (document === 'books') {
+      return this.store.dispatch(addBook({ book: addedItem }));
+    }
+    if (document === 'films') {
+      return this.store.dispatch(addMovie({ movie: addedItem }));
+    }
   }
 
   onSubmit(document: string) {
-    this.notifier.notify(
-      'success',
-      `Congratulations! New ${document.substring(
-        0,
-        document.length - 1
-      )} entitled '${this.form.value.title}' was added!`
-    );
     this.updateRating();
     this.sendData(document);
     this.form.reset();

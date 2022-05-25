@@ -1,5 +1,5 @@
 <router-outlet></router-outlet>
-<div class="books-page" (click)="closeModal()">
+<div class="books-page">
   <div class="books-page__container">
     <img
       src="../../../assets/images/coverBackground2.jpg"
@@ -18,12 +18,32 @@
           [routerLink]="'book'"
           [queryParams]="{ id: book.id }"
         >
-        <span *ngIf="book.status === 'wish'" [ngStyle]="{'color': 'rgba(6, 121, 15, 0.979)', 'font-weight':'bold'}">Wish</span>
-        <span *ngIf="book.status === 'inProgress'" [ngStyle]="{'color': 'rgb(219, 144, 5)', 'font-weight':'bold'}">Reading now</span>
-        <span *ngIf="book.status === 'finished'" [ngStyle]="{'color': 'rgba(215, 17, 17, 0.811)', 'font-weight':'bold'}">Finished</span>
+          <span
+            *ngIf="book.status === 'wish'"
+            [ngStyle]="{
+              color: 'rgba(6, 121, 15, 0.979)',
+              'font-weight': 'bold'
+            }"
+            >Wish</span
+          >
+          <span
+            *ngIf="book.status === 'inProgress'"
+            [ngStyle]="{ color: 'rgb(219, 144, 5)', 'font-weight': 'bold' }"
+            >Reading now</span
+          >
+          <span
+            *ngIf="book.status === 'finished'"
+            [ngStyle]="{
+              color: 'rgba(215, 17, 17, 0.811)',
+              'font-weight': 'bold'
+            }"
+            >Finished</span
+          >
           <div class="book__text">
             <h2 class="book__title">{{ book.title }}</h2>
-            <div class="book__description">{{ book.description! | cutText }}</div>
+            <div class="book__description">
+              {{ book.description! | cutText }}
+            </div>
           </div>
           <div class="book__rating">
             <fa-icon
@@ -34,7 +54,7 @@
             ><fa-icon
               class="book__rating_empty"
               [icon]="faStar"
-              *ngFor="let item of createRangeOfStars(book.rating,true)"
+              *ngFor="let item of createRangeOfStars(book.rating, true)"
             ></fa-icon>
           </div>
         </div>
@@ -48,7 +68,12 @@
         ></fa-icon>
       </div>
     </div>
-  </div>
     <notifier-container></notifier-container>
+  </div>
+  <app-modal-window
+    *ngIf="modalOpened"
+    (positiveAnswer)="deleteBook(this.currentId)"
+    (negativeAnswer)="closeModal()"
+    [blockItem]="'book'"
+  ></app-modal-window>
 </div>
-<app-modal-window *ngIf="modalOpened" (positiveAnswer)="deleteBook(this.currentId)" (nevativeAnswer)="closeModal()" [blockItem]="'book'"></app-modal-window>

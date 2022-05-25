@@ -1,6 +1,7 @@
 .movie-page {
   width: 100%;
   height: fit-content;
+  min-height: calc(100vh - 59px);
   border-radius: 4px;
   position: relative;
   // .movie-page__container

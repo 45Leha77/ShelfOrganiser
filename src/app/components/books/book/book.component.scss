@@ -1,6 +1,7 @@
 .book-page {
   width: 100%;
   height: fit-content;
+  min-height: calc(100vh - 59px);
   border-radius: 4px;
   position: relative;
   // .book-page__container
@@ -105,7 +106,7 @@
     min-height: 25%;
     height: fit-content;
     font-size: 17px !important;
-     @media (max-width: 550px) {
+    @media (max-width: 550px) {
       font-size: 12px !important;
     }
   }
@@ -121,7 +122,7 @@
       text-decoration: none;
       color: white;
     }
-     @media (max-width: 550px) {
+    @media (max-width: 550px) {
       font-size: 13px !important;
     }
   }

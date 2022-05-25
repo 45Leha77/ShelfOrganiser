@@ -1,5 +1,5 @@
 <router-outlet></router-outlet>
-<div class="movies-page" (click)="closeModal()">
+<div class="movies-page">
   <div class="movies-page__container">
     <img
       src="../../../assets/images/coverBackground2.jpg"
@@ -41,7 +41,9 @@
           >
           <div class="movie__text">
             <h2 class="movie__title">{{ movie.title }}</h2>
-            <div class="movie__description">{{ movie.description! | cutText }}</div>
+            <div class="movie__description">
+              {{ movie.description! | cutText }}
+            </div>
           </div>
           <div class="movie__rating">
             <fa-icon
@@ -71,7 +73,7 @@
   <app-modal-window
     *ngIf="modalOpened"
     (positiveAnswer)="deleteMovie(this.currentId)"
-    (nevativeAnswer)="closeModal()"
+    (negativeAnswer)="closeModal()"
     [blockItem]="'movie'"
   ></app-modal-window>
 </div>

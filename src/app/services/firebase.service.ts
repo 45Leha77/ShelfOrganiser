@@ -9,13 +9,15 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  DocumentData,
+  DocumentReference,
 } from 'firebase/firestore';
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signOut,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
+  // onAuthStateChanged,
 } from 'firebase/auth';
 import { Book, Movie } from '../models';
 
@@ -37,18 +39,14 @@ export class FirebaseService {
     return false;
   }
 
-  getData(docs: string): any {
-    return getDocs(collection(this.db, docs))
-      .then((snapshot) => {
-        let books: any[] = [];
-        snapshot.docs.forEach((doc) => {
-          books.push({ ...doc.data(), id: doc.id });
-        });
-        return books;
-      })
-      .catch((err) => {
-        console.log(err.message);
+  getData(docs: string): Promise<Book[]> {
+    return getDocs(collection(this.db, docs)).then((snapshot) => {
+      let books: any[] = [];
+      snapshot.docs.forEach((doc) => {
+        books.push({ ...doc.data(), id: doc.id });
       });
+      return books;
+    });
   }
 
   getSingleDataItem(document: string, id: string): any {
@@ -59,11 +57,12 @@ export class FirebaseService {
     });
   }
 
-  sendData(document: string, object: Book | Movie): any {
+  sendData(
+    document: string,
+    object: Book | Movie
+  ): Promise<DocumentReference<DocumentData>> {
     const colRef = collection(this.db, document);
-    return addDoc(colRef, object).catch((err) => {
-      console.log(err.message);
-    });
+    return addDoc(colRef, object);
   }
 
   deleteData(document: string, id: string): any {
@@ -73,11 +72,9 @@ export class FirebaseService {
     });
   }
 
-  updateData(document: string, id: string, obj: {}): any {
+  updateData(document: string, id: string, obj: {}): Promise<any> {
     const docRef = doc(this.db, document, id);
-    updateDoc(docRef, obj).catch((err) => {
-      console.log(err);
-    });
+    return updateDoc(docRef, obj);
   }
 
   isAuth() {
@@ -117,9 +114,9 @@ export class FirebaseService {
     });
   }
 
-  lookAfterStatus() {
-    return onAuthStateChanged(this.auth, (user) => {
-      console.log('user status changes', user);
-    });
-  }
+  // lookAfterStatus() {
+  //   return onAuthStateChanged(this.auth, (user) => {
+  //     console.log('user status changes', user);
+  //   });
+  // }
 }

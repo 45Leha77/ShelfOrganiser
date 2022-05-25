@@ -1,10 +1,10 @@
-<div class="book-page" (click)="closeModal()">
+<div class="book-page">
   <div class="book-page__container">
     <div class="book-page__buttons">
       <button
         class="book-page__button start-button"
         type="button"
-        *ngIf="this.currentStatus === 'wish'"
+        *ngIf="book?.status === 'wish'"
         (click)="startReading()"
       >
         Start reading
@@ -12,7 +12,7 @@
       <button
         class="book-page__button finish-button"
         type="button"
-        *ngIf="this.currentStatus === 'inProgress'"
+        *ngIf="book?.status === 'inProgress'"
         (click)="finishReading()"
       >
         Finish reading
@@ -20,7 +20,7 @@
       <button
         class="book-page__button delete-button"
         type="button"
-        (click)="openModal(book.id, $event)"
+        (click)="openModal($event)"
       >
         Delete
       </button>
@@ -87,7 +87,7 @@
           id="genre"
           #select
           class="sub-side__genre block-style text-center"
-          (change)="test(book.id, select)"
+          (change)="test(select)"
         >
           <option
             *ngFor="let genre of genres"
@@ -102,20 +102,19 @@
           class="sub-side__status text-center block-style"
           *ngIf="book?.status"
           [ngStyle]="{ 'background-color': getStatusBlockColor() }"
-          title="sdfsdf"
         >
-          <span *ngIf="book.status === 'wish'">Wish</span>
-          <span *ngIf="book.status === 'inProgress'">Reading now</span>
-          <span *ngIf="book.status === 'finished'">Finished</span>
+          <span *ngIf="book?.status === 'wish'">Wish</span>
+          <span *ngIf="book?.status === 'inProgress'">Reading now</span>
+          <span *ngIf="book?.status === 'finished'">Finished</span>
         </div>
         <span
-          *ngIf="this.currentStatus === 'inProgress'"
+          *ngIf="book?.status === 'inProgress'"
           class="sub-side__block-title"
           >Current page</span
         >
         <div
           class="sub-side__page block-style text-center"
-          *ngIf="this.currentStatus === 'inProgress'"
+          *ngIf="book?.status === 'inProgress'"
           id="currentPage"
           (dblclick)="permitEdit($event)"
           (blur)="
@@ -125,18 +124,16 @@
           {{ book.currentPage }}
         </div>
         <span
-          *ngIf="this.currentStatus === 'finished'"
+          *ngIf="book?.status === 'finished'"
           class="sub-side__block-title"
           >Finished year</span
         >
         <div
           class="sub-side__page block-style text-center"
-          *ngIf="this.currentStatus === 'finished'"
+          *ngIf="book?.status === 'finished'"
           id="doneYear"
           (dblclick)="permitEdit($event)"
-          (blur)="
-            stopEditing($event, book.id, validator.isValidYear($event))
-          "
+          (blur)="stopEditing($event, book.id, validator.isValidYear($event))"
         >
           {{ book.doneYear }}
         </div>
@@ -147,7 +144,7 @@
 </div>
 <app-modal-window
   *ngIf="modalOpened"
-  (positiveAnswer)="deleteBook(this.currentId)"
-  (nevativeAnswer)="closeModal()"
+  (positiveAnswer)="deleteBook(book.id)"
+  (negativeAnswer)="closeModal()"
   [blockItem]="'book'"
 ></app-modal-window>

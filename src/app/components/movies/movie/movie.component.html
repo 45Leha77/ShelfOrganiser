@@ -1,26 +1,26 @@
-<div class="movie-page" (click)="closeModal()">
+<div class="movie-page">
   <div class="movie-page__container">
     <div class="movie-page__buttons">
       <button
         class="movie-page__button start-button"
         type="button"
-        *ngIf="this.currentStatus === 'wish'"
-        (click)="startReading()"
+        *ngIf="movie?.status === 'wish'"
+        (click)="startWatching()"
       >
         Start watching
       </button>
       <button
         class="movie-page__button finish-button"
         type="button"
-        *ngIf="this.currentStatus === 'inProgress'"
-        (click)="finishReading()"
+        *ngIf="movie?.status === 'inProgress'"
+        (click)="finishWatching()"
       >
         Finish watching
       </button>
       <button
         class="movie-page__button delete-button"
         type="button"
-        (click)="openModal(movie.id, $event)"
+        (click)="openModal($event)"
       >
         Delete
       </button>
@@ -106,17 +106,17 @@
           [ngStyle]="{ 'background-color': getStatusBlockColor() }"
         >
           <span *ngIf="movie.status === 'wish'">Wish</span>
-          <span *ngIf="movie.status === 'inProgress'">Reading now</span>
+          <span *ngIf="movie.status === 'inProgress'">Watching now</span>
           <span *ngIf="movie.status === 'finished'">Finished</span>
         </div>
         <span
-          *ngIf="this.currentStatus === 'inProgress'"
+          *ngIf="movie?.status === 'inProgress'"
           class="sub-side__block-title"
           >Current Minute</span
         >
         <div
           class="sub-side__page block-style text-center"
-          *ngIf="this.currentStatus === 'inProgress'"
+          *ngIf="movie?.status === 'inProgress'"
           id="currentMin"
           (dblclick)="permitEdit($event)"
           (blur)="
@@ -125,19 +125,15 @@
         >
           {{ movie.currentMin }}
         </div>
-        <span
-          *ngIf="this.currentStatus === 'finished'"
-          class="sub-side__block-title"
+        <span *ngIf="movie?.status === 'finished'" class="sub-side__block-title"
           >Finished year</span
         >
         <div
           class="sub-side__page block-style text-center"
-          *ngIf="this.currentStatus === 'finished'"
+          *ngIf="movie?.status === 'finished'"
           id="doneYear"
           (dblclick)="permitEdit($event)"
-          (blur)="
-            stopEditing($event, movie.id, validator.isValidYear($event))
-          "
+          (blur)="stopEditing($event, movie.id, validator.isValidYear($event))"
         >
           {{ movie.doneYear }}
         </div>
@@ -148,7 +144,7 @@
 </div>
 <app-modal-window
   *ngIf="modalOpened"
-  (positiveAnswer)="deleteMovie(this.currentId)"
-  (nevativeAnswer)="closeModal()"
+  (positiveAnswer)="deleteMovie(movie.id)"
+  (negativeAnswer)="closeModal()"
   [blockItem]="'movie'"
 ></app-modal-window>

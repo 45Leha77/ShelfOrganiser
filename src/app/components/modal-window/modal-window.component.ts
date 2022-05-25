@@ -8,7 +8,7 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 })
 export class ModalWindowComponent implements OnInit {
   @Output() positiveAnswer = new EventEmitter();
-  @Output() nevativeAnswer = new EventEmitter();
+  @Output() negativeAnswer = new EventEmitter();
   @Input() blockItem!: 'book' | 'movie';
 
   faClose = faClose;
@@ -21,6 +21,6 @@ export class ModalWindowComponent implements OnInit {
     this.positiveAnswer.emit();
   }
   closeModal() {
-    this.nevativeAnswer.emit();
+    this.negativeAnswer.emit();
   }
 }

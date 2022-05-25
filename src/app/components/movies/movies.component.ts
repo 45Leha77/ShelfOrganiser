@@ -1,75 +1,71 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { faClose, faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
 import { Movie } from 'src/app/models';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { NotifierService } from 'angular-notifier';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { Store } from '@ngrx/store';
+import { getMovies } from './state/movies.selector';
+import { deleteMovie, loadMovies } from './state/movies.actions';
 
 @Component({
   selector: 'app-movies',
   templateUrl: './movies.component.html',
   styleUrls: ['./movies.component.scss'],
 })
-export class MoviesComponent implements OnInit {
+export class MoviesComponent implements OnInit, OnDestroy {
   constructor(
-    private firebase: FirebaseService,
-    private notifierService: NotifierService,
     private route: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private store: Store
   ) {}
   faClose = faClose;
   faStar = faStar;
   faPlus = faPlus;
+
   movies: Movie[] = [];
   allMovies: Movie[] = [];
-  notifier = this.notifierService;
+
   modalOpened = false;
   currentId!: string;
 
   loadMoviesData() {
-    this.firebase.getData('films').then((movies: Movie[]) => {
+    return this.store.select(getMovies).subscribe((movies) => {
       this.movies = movies;
-      return (this.allMovies = movies);
+      this.allMovies = movies;
     });
   }
   cleanQueryParams() {
-    this.route.navigate([], {
+    return this.route.navigate([], {
       queryParams: {
         search: null,
       },
       queryParamsHandling: 'merge',
     });
   }
-
-  ngOnInit(): void {
-    this.cleanQueryParams();
-    this.activatedRoute.queryParams.subscribe((params) => {
-      if (!params['search']) {
+  searchByRouterParams() {
+    return this.activatedRoute.queryParams.subscribe((params) => {
+      let searchValue = params['search'];
+      if (!searchValue) {
         this.movies = this.allMovies;
       } else {
         this.movies = [];
         this.allMovies.forEach((movie: Movie) => {
-          if (
-            movie.title.toLowerCase().match(`${params['search'].toLowerCase()}`)
-          ) {
+          if (movie.title.toLowerCase().match(`${searchValue.toLowerCase()}`)) {
             this.movies.push(movie);
           }
         });
       }
     });
+  }
+  ngOnInit(): void {
+    this.cleanQueryParams();
+    this.searchByRouterParams();
+    this.store.dispatch(loadMovies());
     this.loadMoviesData();
   }
 
   deleteMovie(id: string) {
-    this.allMovies.find((book: Movie) => {
-      if (book.id === id) {
-        this.notifier.notify('warning', `The '${book.title}' movie was deleted`);
-      }
-    });
-    this.firebase.deleteData('films', id);
+    this.store.dispatch(deleteMovie({ id }));
     this.closeModal();
-    return this.loadMoviesData();
   }
 
   createRangeOfStars(number: string | undefined, isForEmptyStars?: boolean) {
@@ -86,7 +82,6 @@ export class MoviesComponent implements OnInit {
     return new Array(num);
   }
   openModal(id: string, event: any) {
-    this.currentId = '';
     this.currentId = id;
     this.modalOpened = true;
     event.stopPropagation();
@@ -95,5 +90,10 @@ export class MoviesComponent implements OnInit {
     if (this.modalOpened === true) {
       this.modalOpened = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.loadMoviesData().unsubscribe();
+    this.searchByRouterParams().unsubscribe();
   }
 }

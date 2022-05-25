@@ -23,6 +23,9 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ModalWindowModule } from './components/modal-window/modal-window.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthorizationModule } from './components/authorization/authorization.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -66,11 +69,7 @@ const customNotifierOptions: NotifierOptions = {
 };
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    NotFoundComponent,
-  ],
+  declarations: [AppComponent, HeaderComponent, NotFoundComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -79,13 +78,17 @@ const customNotifierOptions: NotifierOptions = {
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
-    // provideFirestore(() => getFirestore()),
-    // provideStorage(() => getStorage()),
     NotifierModule.withConfig(customNotifierOptions),
     ModalWindowModule,
     RouterModule,
     SharedModule,
     AuthorizationModule,
+    StoreModule.forRoot({}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+    EffectsModule.forRoot([]),
   ],
   exports: [NotifierModule],
   providers: [AuthGuard, FirebaseService, NotifierService],

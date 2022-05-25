@@ -1,67 +1,71 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Movie,Genre, Status } from 'src/app/models';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Movie, Genre, Status } from 'src/app/models';
 import { EditedContentValidatorService } from 'src/app/services/validation/edited-content-validator.service';
-import { NotifierService } from 'angular-notifier';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { GenresService } from 'src/app/services/genres.service';
+import {
+  deleteMovie,
+  editMovie,
+  finishWatching,
+  loadMovies,
+  startWatching,
+} from '../state/movies.actions';
+import { Store } from '@ngrx/store';
+import { getMovieById } from '../state/movies.selector';
 
 @Component({
   selector: 'app-movie',
   templateUrl: './movie.component.html',
   styleUrls: ['./movie.component.scss'],
+  providers: [EditedContentValidatorService],
 })
-export class MovieComponent implements OnInit {
+export class MovieComponent implements OnInit, OnDestroy {
+  safeSrc!: string;
   constructor(
-    private firebase: FirebaseService,
     private route: ActivatedRoute,
     public validator: EditedContentValidatorService,
-    private notifierService: NotifierService,
     private genresService: GenresService,
-    private router: Router
+    private store: Store
   ) {}
+
   id!: string;
   movie!: Movie;
   currentStatus!: Status;
-  notifier = this.notifierService;
+
   faClose = faClose;
   modalOpened = false;
-  currentId!: string;
+
   genres: Genre[] = this.genresService.genres;
 
   ngOnInit(): void {
+    this.store.dispatch(loadMovies());
     this.id = this.route.snapshot.queryParams['id'];
     this.loadMovie(this.id);
   }
+
+  ngOnDestroy(): void {
+    this.loadMovie(this.id).unsubscribe();
+  }
   loadMovie(id: string) {
-    this.firebase.getSingleDataItem('films', id).then((movie: Movie) => {
+    return this.store.select(getMovieById, { id }).subscribe((movie) => {
       this.movie = movie;
-      this.currentStatus = this.movie.status;
     });
   }
   deleteMovie(id: string) {
-    this.firebase.deleteData('films', id);
+    this.store.dispatch(deleteMovie({ id }));
     this.closeModal();
-    this.router.navigate(['/movies']);
   }
-  editBlock(doc: string, id: string, block: HTMLElement) {
-    this.firebase.updateData(doc, id, {
-      [block.id]: block.innerText,
-    });
-    this.notifier.notify(
-      'success',
-      `${block.id[0].toUpperCase() + block.id.slice(1)} was succesfully edited`
-    );
-  }
-  editInputBlock(doc: string, id: string, input: HTMLSelectElement) {
-    this.firebase.updateData(doc, id, {
-      [input.id]: input.value,
-    });
-    this.notifier.notify(
-      'success',
-      `${input.id[0].toUpperCase() + input.id.slice(1)} was succesfully edited`
-    );
+  editBlock(block: any) {
+    let value = block.innerText;
+    if (block.value) {
+      value = block.value;
+    }
+    const editedMovie: Movie = {
+      ...this.movie,
+      [block.id]: value,
+    };
+    this.store.dispatch(editMovie({ movie: editedMovie }));
   }
   permitEdit(event: any) {
     event.target.contentEditable = 'true';
@@ -71,51 +75,39 @@ export class MovieComponent implements OnInit {
       location.reload();
       return;
     }
-    this.editBlock('films', id, event.target);
+    this.editBlock(event.target);
     event.target.contentEditable = 'false';
-    this.loadMovie(id);
   }
-  updateMovieStatus(id: string) {
-    this.firebase.updateData('films', id, {
-      status: this.currentStatus,
-      currentMin: 0,
-    });
+
+  startWatching() {
+    const editedMovie: Movie = {
+      ...this.movie,
+      status: 'inProgress',
+      currentMin: '0',
+    };
+    this.store.dispatch(startWatching({ movie: editedMovie }));
   }
-  startReading() {
-    this.currentStatus = 'inProgress';
-    this.movie.currentMin = '0';
-    this.updateMovieStatus(this.id);
-    this.loadMovie(this.id);
-    this.notifier.notify(
-      'info',
-      `You just started watching the '${this.movie.title}' movie. Keep it up!`
-    );
-  }
-  finishReading() {
-    this.currentStatus = 'finished';
-    this.updateMovieStatus(this.id);
-    this.loadMovie(this.id);
-    this.notifier.notify(
-      'success',
-      `You finished watching the '${this.movie.title}' movie. Well done!`
-    );
+  finishWatching() {
+    const editedMovie: Movie = {
+      ...this.movie,
+      status: 'finished',
+    };
+    this.store.dispatch(finishWatching({ movie: editedMovie }));
   }
   getStatusBlockColor(): string {
-    if (this.currentStatus === 'wish') {
+    if (this.movie.status === 'wish') {
       return 'rgba(11, 182, 25, 0.779)';
     }
-    if (this.currentStatus === 'finished') {
+    if (this.movie.status === 'finished') {
       return 'rgba(215, 17, 17, 0.811)';
     }
-    if (this.currentStatus === 'inProgress') {
+    if (this.movie.status === 'inProgress') {
       return 'rgb(219, 144, 5)';
     } else {
       throw new Error('Wrong status');
     }
   }
-  openModal(id: string, event: any) {
-    this.currentId = '';
-    this.currentId = id;
+  openModal(event: any) {
     this.modalOpened = true;
     event.stopPropagation();
   }
@@ -123,6 +115,6 @@ export class MovieComponent implements OnInit {
     this.modalOpened = false;
   }
   editGenre(id: string, input: HTMLSelectElement) {
-    this.editInputBlock('films', id, input);
+    this.editBlock(input);
   }
 }
