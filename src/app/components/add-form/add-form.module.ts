@@ -6,7 +6,6 @@ import { NotifierModule } from 'angular-notifier';
 import { AddFormRoutingModule } from './add-form-routing.module';
 import { AddFormComponent } from './add-form.component';
 
-
 @NgModule({
   declarations: [AddFormComponent],
   imports: [

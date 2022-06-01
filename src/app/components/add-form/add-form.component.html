@@ -77,11 +77,13 @@
         *ngIf="form.get('website')?.invalid && form.get('website')?.touched"
       >
         <span *ngIf="form.get('website')!.errors!['pattern']">
-          Website field must of http format (e.g., https://www.youtube.com/)
+          Website field must of http format (e.g., https://www.youtube.com)
         </span>
       </p>
       <select name="genre" class="form__input" formControlName="genre" required>
-        <option *ngFor="let genre of genres" value="{{genre}}">{{genre}}</option>
+        <option *ngFor="let genre of genres" value="{{ genre }}">
+          {{ genre }}
+        </option>
       </select>
       <div class="form__rating">
         <div class="rating-group">
