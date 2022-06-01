@@ -8,6 +8,14 @@
 
   &__container {
     padding: 1% 100px;
+    display: flex;
+    @media (max-width: 900px) {
+      padding: 1% 30px;
+    }
+    @media (max-width: 550px) {
+      padding: 1% 20px;
+      flex-direction: column-reverse;
+    }
   }
   &__background-photo {
     position: absolute;
@@ -28,12 +36,30 @@
     grid-template-columns: repeat(3, auto);
     gap: 20px;
     justify-content: center;
-    @media (max-width: 1100px) {
+    width: 85%;
+    @media (max-width: 1150px) {
       grid-template-columns: repeat(2, auto);
       gap: 15px;
     }
-    @media (max-width: 650px) {
+    @media (max-width: 900px) {
+      gap: 5px;
+    }
+    @media (max-width: 780px) {
       grid-template-columns: repeat(1, auto);
+    }
+    @media (max-width: 550px) {
+      width: 100%;
+    }
+  }
+  &__filters {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    @media (max-width: 900px) {
+      width: 40%;
+    }
+    @media (max-width: 550px) {
+      width: 100%;
     }
   }
 }
@@ -115,7 +141,7 @@
   // .book__description
 
   &__description {
-    text-align:justify;
+    text-align: justify;
   }
 
   // .book__rating
@@ -125,10 +151,34 @@
     display: flex;
     flex-direction: row;
     &_filled {
-    color: orange;
+      color: orange;
     }
     &_empty {
       color: #ddd;
     }
+  }
+}
+
+::ng-deep {
+  .status-select-panel.mat-select-panel {
+    background: rgba(100, 173, 161, 0.644);
+  }
+
+  .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: green;
+  }
+  .mat-primary .mat-option.mat-selected {
+    &:not(.mat-option-disabled) {
+      background: rgba(100, 173, 161, 0.894);
+      color: black;
+      font-weight: 500;
+    }
+  }
+  .mat-select-value,
+  .mat-option-text {
+    font-size: 18px;
+  }
+  .mat-select-arrow {
+    color: black !important;
   }
 }

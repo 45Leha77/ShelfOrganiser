@@ -17,13 +17,21 @@
       >
         Finish watching
       </button>
-      <button
-        class="movie-page__button delete-button"
-        type="button"
-        (click)="openModal($event)"
-      >
-        Delete
-      </button>
+      <div>
+        <button
+          class="movie-page__button update-button"
+          (click)="openEditingForm()"
+        >
+          Update</button
+        >&nbsp;
+        <button
+          class="movie-page__button delete-button"
+          type="button"
+          (click)="openModal($event)"
+        >
+          Delete
+        </button>
+      </div>
     </div>
     <div class="movie-page__main">
       <img
@@ -148,3 +156,8 @@
   (negativeAnswer)="closeModal()"
   [blockItem]="'movie'"
 ></app-modal-window>
+<app-edit-movie-form
+  *ngIf="isEditing"
+  [id]="id"
+  (closeModal)="closeEditingForm()"
+></app-edit-movie-form>

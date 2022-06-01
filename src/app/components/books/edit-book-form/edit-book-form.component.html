@@ -1,0 +1,60 @@
+<div class="backdrop"></div>
+<main class="edit-book" *ngIf="book">
+  <fa-icon
+    class="edit-book__delete-button"
+    [icon]="faClose"
+    (click)="stopEditing()"
+  ></fa-icon>
+  <div class="edit-book__container">
+    <form
+      class="edit-book__form form"
+      [formGroup]="editForm"
+      (ngSubmit)="onFormSubmit()"
+    >
+      <span class="form__title">Editing</span>
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Placeholder" formControlName="title" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          placeholder="Placeholder"
+          formControlName="description"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Website</mat-label>
+        <input matInput placeholder="Placeholder" formControlName="website" />
+        <mat-hint>Example: www.youtube.com</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Rating</mat-label>
+        <input matInput placeholder="Placeholder" formControlName="rating" />
+        <mat-hint>Put value from 1 to 10</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Year</mat-label>
+        <input matInput placeholder="Placeholder" formControlName="released" />
+        <mat-hint>Example: 2016</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Genre</mat-label>
+        <mat-select formControlName="genre">
+          <mat-option *ngFor="let genre of genres" [value]="genre">{{
+            genre
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="accent"
+        type="submit"
+        [disabled]="!editForm.valid"
+      >
+        Update
+      </button>
+    </form>
+  </div>
+</main>

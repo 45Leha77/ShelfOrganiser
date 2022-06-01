@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { RouterModule } from '@angular/router';
@@ -26,6 +26,9 @@ import { AuthorizationModule } from './components/authorization/authorization.mo
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
+
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -72,9 +75,9 @@ const customNotifierOptions: NotifierOptions = {
   declarations: [AppComponent, HeaderComponent, NotFoundComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FontAwesomeModule,
-    ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),

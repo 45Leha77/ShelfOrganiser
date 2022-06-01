@@ -68,6 +68,21 @@
         ></fa-icon>
       </div>
     </div>
+    <div class="books-page__filters filters-books-page">
+      <form [formGroup]="filterForm" class="books-page__filter">
+        <mat-form-field
+          appearance="outline"
+          class="filters-books-page__status-select"
+        >
+          <mat-select formControlName="status" panelClass="status-select-panel">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="wish">Wish</mat-option>
+            <mat-option value="inProgress">Reading now</mat-option>
+            <mat-option value="finished">Finished</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </div>
     <notifier-container></notifier-container>
   </div>
   <app-modal-window

@@ -28,6 +28,7 @@ export class BookComponent implements OnInit, OnDestroy {
     private genresService: GenresService,
     private store: Store<AppState>
   ) {}
+
   id!: string;
   book!: Book;
 
@@ -35,6 +36,8 @@ export class BookComponent implements OnInit, OnDestroy {
   modalOpened = false;
 
   genres: Genre[] = this.genresService.genres;
+
+  isEditing = false;
 
   ngOnInit(): void {
     this.store.dispatch(loadBooks());
@@ -110,7 +113,14 @@ export class BookComponent implements OnInit, OnDestroy {
   closeModal() {
     this.modalOpened = false;
   }
-  test(input: HTMLSelectElement) {
+  editGenre(input: HTMLSelectElement) {
     this.editBlock(input);
+  }
+
+  openEditingForm() {
+    this.isEditing = true;
+  }
+  closeEditingForm() {
+    this.isEditing = false;
   }
 }

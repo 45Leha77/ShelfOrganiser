@@ -1,15 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Book } from 'src/app/models';
 import { faClose, faStar, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { deleteBook, loadBooks } from './state/books.actions';
 import { getBooks } from './state/books.selector';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-books',
   templateUrl: './books.component.html',
   styleUrls: ['./books.component.scss'],
+  // encapsulation: ViewEncapsulation.None,
 })
 export class BooksComponent implements OnInit, OnDestroy {
   constructor(
@@ -26,6 +28,8 @@ export class BooksComponent implements OnInit, OnDestroy {
 
   modalOpened = false;
   currentId!: string;
+
+  filterForm!: FormGroup;
 
   loadBooksData() {
     return this.store.select(getBooks).subscribe((books) => {
@@ -44,23 +48,35 @@ export class BooksComponent implements OnInit, OnDestroy {
   searchByRouterParams() {
     return this.activatedRoute.queryParams.subscribe((params) => {
       let searchValue = params['search'];
-      if (!searchValue) {
-        this.books = this.allBooks;
-      } else {
-        this.books = [];
-        this.allBooks.forEach((book: Book) => {
-          if (book.title.toLowerCase().match(`${searchValue.toLowerCase()}`)) {
-            this.books.push(book);
-          }
-        });
-      }
+      this.books = this.allBooks.filter((book: Book) => {
+        return searchValue
+          ? book.title.toLowerCase().match(`${searchValue.toLowerCase()}`)
+          : true;
+      });
     });
   }
+
+  createFilterForm() {
+    this.filterForm = new FormGroup({
+      status: new FormControl('all'),
+    });
+  }
+
+  onFilterFormStatusChange() {
+    return this.filterForm.get('status')?.valueChanges.subscribe((status) => {
+      this.books = this.allBooks.filter((book: Book) => {
+        return status == 'all' ? true : book.status === status;
+      });
+    });
+  }
+
   ngOnInit(): void {
     this.cleanQueryParams();
     this.searchByRouterParams();
     this.store.dispatch(loadBooks());
     this.loadBooksData();
+    this.createFilterForm();
+    this.onFilterFormStatusChange();
   }
 
   deleteBook(id: string) {

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { getMovies } from './state/movies.selector';
 import { deleteMovie, loadMovies } from './state/movies.actions';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-movies',
@@ -27,6 +28,8 @@ export class MoviesComponent implements OnInit, OnDestroy {
   modalOpened = false;
   currentId!: string;
 
+  filterForm!: FormGroup;
+
   loadMoviesData() {
     return this.store.select(getMovies).subscribe((movies) => {
       this.movies = movies;
@@ -44,23 +47,34 @@ export class MoviesComponent implements OnInit, OnDestroy {
   searchByRouterParams() {
     return this.activatedRoute.queryParams.subscribe((params) => {
       let searchValue = params['search'];
-      if (!searchValue) {
-        this.movies = this.allMovies;
-      } else {
-        this.movies = [];
-        this.allMovies.forEach((movie: Movie) => {
-          if (movie.title.toLowerCase().match(`${searchValue.toLowerCase()}`)) {
-            this.movies.push(movie);
-          }
-        });
-      }
+      this.movies = this.allMovies.filter((movie: Movie) => {
+        return searchValue
+          ? movie.title.toLowerCase().match(`${searchValue.toLowerCase()}`)
+          : true;
+      });
     });
   }
+
+  createFilterForm() {
+    this.filterForm = new FormGroup({
+      status: new FormControl('all'),
+    });
+  }
+  onFilterFormStatusChange() {
+    return this.filterForm.get('status')?.valueChanges.subscribe((status) => {
+      this.movies = this.allMovies.filter((movie: Movie) => {
+        return status == 'all' ? true : movie.status === status;
+      });
+    });
+  }
+
   ngOnInit(): void {
     this.cleanQueryParams();
     this.searchByRouterParams();
     this.store.dispatch(loadMovies());
     this.loadMoviesData();
+    this.createFilterForm();
+    this.onFilterFormStatusChange();
   }
 
   deleteMovie(id: string) {

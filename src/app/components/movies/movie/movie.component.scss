@@ -50,6 +50,9 @@
     .finish-button {
       background-color: rgb(219, 144, 5);
     }
+    .update-button {
+      background-color: #ffd740;
+    }
   }
 
   // .movie-page__button
@@ -100,7 +103,6 @@
   // .main-side__description
 
   &__description {
-    padding-top: 10px;
     width: 90%;
     min-height: 25%;
     height: fit-content;

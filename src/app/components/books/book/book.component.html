@@ -17,13 +17,21 @@
       >
         Finish reading
       </button>
-      <button
-        class="book-page__button delete-button"
-        type="button"
-        (click)="openModal($event)"
-      >
-        Delete
-      </button>
+      <div>
+        <button
+          class="book-page__button update-button"
+          (click)="openEditingForm()"
+        >
+          Update</button
+        >&nbsp;
+        <button
+          class="book-page__button delete-button"
+          type="button"
+          (click)="openModal($event)"
+        >
+          Delete
+        </button>
+      </div>
     </div>
     <div class="book-page__main">
       <img
@@ -87,7 +95,7 @@
           id="genre"
           #select
           class="sub-side__genre block-style text-center"
-          (change)="test(select)"
+          (change)="editGenre(select)"
         >
           <option
             *ngFor="let genre of genres"
@@ -123,9 +131,7 @@
         >
           {{ book.currentPage }}
         </div>
-        <span
-          *ngIf="book?.status === 'finished'"
-          class="sub-side__block-title"
+        <span *ngIf="book?.status === 'finished'" class="sub-side__block-title"
           >Finished year</span
         >
         <div
@@ -148,3 +154,8 @@
   (negativeAnswer)="closeModal()"
   [blockItem]="'book'"
 ></app-modal-window>
+<app-edit-book-form
+  *ngIf="isEditing"
+  [id]="id"
+  (closeModal)="closeEditingForm()"
+></app-edit-book-form>

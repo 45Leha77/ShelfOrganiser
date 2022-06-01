@@ -1,6 +1,6 @@
-import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Movie, Genre, Status } from 'src/app/models';
+import { Movie, Genre } from 'src/app/models';
 import { EditedContentValidatorService } from 'src/app/services/validation/edited-content-validator.service';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { GenresService } from 'src/app/services/genres.service';
@@ -21,7 +21,6 @@ import { getMovieById } from '../state/movies.selector';
   providers: [EditedContentValidatorService],
 })
 export class MovieComponent implements OnInit, OnDestroy {
-  safeSrc!: string;
   constructor(
     private route: ActivatedRoute,
     public validator: EditedContentValidatorService,
@@ -31,12 +30,13 @@ export class MovieComponent implements OnInit, OnDestroy {
 
   id!: string;
   movie!: Movie;
-  currentStatus!: Status;
 
   faClose = faClose;
   modalOpened = false;
 
   genres: Genre[] = this.genresService.genres;
+
+  isEditing = false;
 
   ngOnInit(): void {
     this.store.dispatch(loadMovies());
@@ -116,5 +116,12 @@ export class MovieComponent implements OnInit, OnDestroy {
   }
   editGenre(id: string, input: HTMLSelectElement) {
     this.editBlock(input);
+  }
+
+  openEditingForm() {
+    this.isEditing = true;
+  }
+  closeEditingForm() {
+    this.isEditing = false;
   }
 }
