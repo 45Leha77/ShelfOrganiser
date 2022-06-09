@@ -17,7 +17,6 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   signInWithEmailAndPassword,
-  // onAuthStateChanged,
 } from 'firebase/auth';
 import { Book, Movie } from '../models';
 
@@ -113,10 +112,4 @@ export class FirebaseService {
       sessionStorage.setItem('isLoggedIn', 'true');
     });
   }
-
-  // lookAfterStatus() {
-  //   return onAuthStateChanged(this.auth, (user) => {
-  //     console.log('user status changes', user);
-  //   });
-  // }
 }

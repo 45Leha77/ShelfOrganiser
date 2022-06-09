@@ -1,10 +1,7 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-// import { initializeApp } from "firebase/app";
-// import {
-//   getFirestore, collection, getDocs
-//  } from 'firebase/firestore'
+
 export const environment = {
   firebase: {
     projectId: 'shelf-optimiser',
@@ -18,24 +15,6 @@ export const environment = {
   },
   production: false,
 };
-
-// initializeApp(environment.firebase);
-
-// const db = getFirestore();
-
-// const colRef = collection(db, 'books');
-
-// getDocs(colRef)
-// .then((snapshot) => {
-//   let books: { id: string; }[] = []
-//   snapshot.docs.forEach((doc) => {
-//     books.push({...doc.data(), id: doc.id})
-//   })
-//   console.log(books)
-// })
-// .catch(err => {
-//   console.log(err.message)
-// })
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

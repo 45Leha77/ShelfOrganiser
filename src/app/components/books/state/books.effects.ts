@@ -3,16 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { NotifierService } from 'angular-notifier';
-import {
-  from,
-  map,
-  mergeMap,
-  of,
-  switchMap,
-  take,
-  tap,
-  withLatestFrom,
-} from 'rxjs';
+import { from, map, mergeMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Book } from 'src/app/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import {
@@ -93,10 +84,6 @@ export class BooksEffects {
         );
         return observableData$.pipe(
           map((data) => {
-            this.notifier.notify(
-              'warning',
-              `Book was deleted`
-            );
             return deleteBookSuccess({ id: action.id });
           })
         );
@@ -164,15 +151,15 @@ export class BooksEffects {
     );
   });
 
-  // bookRedirect$ = createEffect(
-  //   () => {
-  //     return this.actions$.pipe(
-  //       ofType(...[deleteBookSuccess, addBookSuccess]),
-  //       tap(() => {
-  //         this.router.navigate(['/books']);
-  //       })
-  //     );
-  //   },
-  //   { dispatch: false }
-  // );
+  bookRedirect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(deleteBookSuccess),
+        tap(() => {
+          this.router.navigate(['/books']);
+        })
+      );
+    },
+    { dispatch: false }
+  );
 }

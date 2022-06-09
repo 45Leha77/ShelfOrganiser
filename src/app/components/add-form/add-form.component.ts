@@ -37,9 +37,7 @@ export class AddFormComponent implements OnInit {
       description: new FormControl(''),
       released: new FormControl('', [Validators.pattern('^[12][0-9]{3}$')]),
       website: new FormControl('', [
-        Validators.pattern(
-          '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?'
-        ),
+        Validators.pattern(/^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$/),
       ]),
       genre: new FormControl('', Validators.required),
       rating: new FormControl(),

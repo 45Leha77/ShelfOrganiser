@@ -58,9 +58,7 @@ export class EditBookFormComponent implements OnInit, OnDestroy {
       title: new FormControl(this.book.title, [Validators.required]),
       description: new FormControl(this.book.description),
       website: new FormControl(this.book.website, [
-        Validators.pattern(
-          '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?'
-        ),
+        Validators.pattern(/^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$/),
       ]),
       rating: new FormControl(this.book.rating, [
         Validators.min(1),

@@ -58,9 +58,7 @@ export class EditMovieFormComponent implements OnInit, OnDestroy {
       title: new FormControl(this.movie.title, [Validators.required]),
       description: new FormControl(this.movie.description),
       website: new FormControl(this.movie.website, [
-        Validators.pattern(
-          '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?'
-        ),
+        Validators.pattern(/^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$/),
       ]),
       rating: new FormControl(this.movie.rating, [
         Validators.min(1),

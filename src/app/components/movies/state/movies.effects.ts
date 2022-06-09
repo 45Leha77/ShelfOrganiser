@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { NotifierService } from 'angular-notifier';
-import { from, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
+import { from, map, mergeMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Movie } from 'src/app/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import {
@@ -84,7 +84,6 @@ export class MoviesEffects {
         );
         return observableData$.pipe(
           map((data) => {
-            this.notifier.notify('warning', `Film was deleted`);
             return deleteMovieSuccess({ id: action.id });
           })
         );
@@ -164,15 +163,15 @@ export class MoviesEffects {
     );
   });
 
-  // movieRedirect$ = createEffect(
-  //   () => {
-  //     return this.actions$.pipe(
-  //       ofType(...[deleteMovieSuccess, addMovieSuccess]),
-  //       tap(() => {
-  //         this.router.navigate(['/films']);
-  //       })
-  //     );
-  //   },
-  //   { dispatch: false }
-  // );
+  movieRedirect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(deleteMovieSuccess),
+        tap(() => {
+          this.router.navigate(['/movies']);
+        })
+      );
+    },
+    { dispatch: false }
+  );
 }
