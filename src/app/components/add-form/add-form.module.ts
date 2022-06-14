@@ -15,6 +15,5 @@ import { AddFormComponent } from './add-form.component';
     CommonModule,
     AddFormRoutingModule,
   ],
-  exports: [AddFormComponent],
 })
 export class AddFormModule {}

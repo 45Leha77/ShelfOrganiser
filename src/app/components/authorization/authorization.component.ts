@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from 'src/app/store/app.state';
+import { authStart } from './state/authorization.actions';
+import { getErrorMessage } from './state/authorization.selector';
 
 @Component({
   selector: 'app-authorization',
@@ -10,13 +13,9 @@ import { FirebaseService } from 'src/app/services/firebase.service';
   styleUrls: ['./authorization.component.scss'],
 })
 export class AuthorizationComponent implements OnInit {
-  constructor(
-    private firebaseService: FirebaseService,
-    private router: Router,
-    private appComponent: AppComponent
-  ) {}
+  constructor(private router: Router, private store: Store<AppState>) {}
   authForm!: FormGroup;
-  authError: string = '';
+  authError!: Observable<string>;
 
   ngOnInit(): void {
     this.authForm = new FormGroup({
@@ -26,23 +25,17 @@ export class AuthorizationComponent implements OnInit {
         Validators.minLength(6),
       ]),
     });
+    if (localStorage.getItem('user')) {
+      this.router.navigate(['/books']);
+    }
+    this.authError = this.store.select(getErrorMessage);
   }
 
   onSubmit() {
-    this.firebaseService
-      .logIn(this.authForm.value.email, this.authForm.value.password)
-      .then(() => {
-        this.authForm.reset();
-        this.router.navigate(['/books']);
-        this.appComponent.isLoggedIn = true;
-      })
-      .catch((err) => {
-        if (err.code === 'auth/user-not-found') {
-          this.authError = 'Email does not exist';
-        }
-        if (err.code === 'auth/wrong-password') {
-          this.authError = 'Wrong password';
-        }
-      });
+    const user = {
+      email: this.authForm.value.email,
+      password: this.authForm.value.password,
+    };
+    this.store.dispatch(authStart({ user }));
   }
 }

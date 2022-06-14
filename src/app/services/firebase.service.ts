@@ -14,9 +14,12 @@ import {
 } from 'firebase/firestore';
 import {
   getAuth,
-  createUserWithEmailAndPassword,
-  signOut,
+  // createUserWithEmailAndPassword,
+  // signOut,
   signInWithEmailAndPassword,
+  signOut,
+  User,
+  UserCredential,
 } from 'firebase/auth';
 import { Book, Movie } from '../models';
 
@@ -29,14 +32,6 @@ export class FirebaseService {
   db = getFirestore();
   auth = getAuth();
   user = this.auth.currentUser;
-  isLoggedIn = this.isActiveSession();
-
-  isActiveSession(): boolean {
-    if (sessionStorage.getItem('isLoggedIn')) {
-      return true;
-    }
-    return false;
-  }
 
   getData(docs: string): Promise<Book[]> {
     return getDocs(collection(this.db, docs)).then((snapshot) => {
@@ -76,40 +71,57 @@ export class FirebaseService {
     return updateDoc(docRef, obj);
   }
 
-  isAuth() {
-    return new Promise<boolean>((resolve, reject) => {
-      resolve(this.isLoggedIn);
-    });
-  }
-
-  createUser(email: string, pass: string) {
-    createUserWithEmailAndPassword(this.auth, email, pass)
-      .then((cred) => {
-        console.log('user created', cred.user);
-        this.isLoggedIn = true;
-        sessionStorage.setItem('isLoggedIn', 'true');
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }
+  // createUser(email: string, pass: string) {
+  //   createUserWithEmailAndPassword(this.auth, email, pass)
+  //     .then((cred) => {
+  //       console.log('user created', cred.user);
+  //       this.isLoggedIn = true;
+  //       localStorage.setItem('isLoggedIn', 'true');
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message);
+  //     });
+  // }
 
   logOut() {
     signOut(this.auth)
       .then((cred) => {
-        console.log('the user is signed out', cred);
-        this.isLoggedIn = false;
-        sessionStorage.removeItem('isLoggedIn');
+        console.log('User is signed out', cred);
+        return cred;
       })
       .catch((err) => {
         console.log(err.message);
       });
   }
 
-  logIn(email: string, pass: string) {
-    return signInWithEmailAndPassword(this.auth, email, pass).then(() => {
-      this.isLoggedIn = true;
-      sessionStorage.setItem('isLoggedIn', 'true');
-    });
+  logIn(email: string, pass: string): Promise<UserCredential> {
+    return signInWithEmailAndPassword(this.auth, email, pass).then(
+      (cred: UserCredential): UserCredential => {
+        return cred;
+      }
+    );
+  }
+
+  setUserInLocalStorage(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUserFromLocalStorage() {
+    const userDataString = localStorage.getItem('user');
+    if (userDataString) {
+      const user = JSON.parse(userDataString);
+      return user;
+    }
+    return null;
+  }
+
+  getAuthError(errCode: string) {
+    if (errCode == 'auth/user-not-found') {
+      return 'Email does not exist';
+    }
+    if (errCode == 'auth/wrong-password') {
+      return 'Wrong password';
+    }
+    return 'Unknown error. Try again later';
   }
 }

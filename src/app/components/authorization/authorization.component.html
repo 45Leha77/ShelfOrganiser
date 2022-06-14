@@ -51,7 +51,7 @@
       <button type="submit" class="form__button" [disabled]="authForm.invalid">
         Log In
       </button>
-      <p class="error-message" *ngIf="authError">
+      <p class="error-message" *ngIf="authError | async as authError">
         {{ authError }}
       </p>
     </form>

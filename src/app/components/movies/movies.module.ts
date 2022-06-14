@@ -39,7 +39,5 @@ import { MOVIES_STATE_NAME } from './state/movies.selector';
     MatInputModule,
     MatButtonModule,
   ],
-  exports: [MoviesComponent, MovieComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MoviesModule {}

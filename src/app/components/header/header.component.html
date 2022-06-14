@@ -16,5 +16,10 @@
       (keyup)="onSubmit(search)"
     />
     <a [routerLink]="'/books'" class="header__item">Books</a>
+    <fa-icon
+      class="header__sign-out"
+      [icon]="faSignOutAlt"
+      (click)="logOut()"
+    ></fa-icon>
   </div>
 </div>

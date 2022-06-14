@@ -1,2 +1,2 @@
-<app-header *ngIf="isLoggedIn"></app-header>
+<app-header *ngIf="isAuthenticated | async"></app-header>
 <router-outlet></router-outlet>

@@ -5,17 +5,12 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { RouterModule } from '@angular/router';
-import {
-  NotifierModule,
-  NotifierOptions,
-  NotifierService,
-} from 'angular-notifier';
+import { NotifierModule, NotifierService } from 'angular-notifier';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { environment } from '../environments/environment';
-import { AuthGuard } from './services/auth-guard.service';
 import { FirebaseService } from './services/firebase.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
@@ -27,54 +22,17 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-const customNotifierOptions: NotifierOptions = {
-  position: {
-    horizontal: {
-      position: 'right',
-      distance: 12,
-    },
-    vertical: {
-      position: 'bottom',
-      distance: 12,
-      gap: 10,
-    },
-  },
-  theme: 'material',
-  behaviour: {
-    autoHide: 5000,
-    onClick: 'hide',
-    onMouseover: 'pauseAutoHide',
-    showDismissButton: true,
-    stacking: 4,
-  },
-  animations: {
-    enabled: true,
-    show: {
-      preset: 'slide',
-      speed: 300,
-      easing: 'ease',
-    },
-    hide: {
-      preset: 'fade',
-      speed: 300,
-      easing: 'ease',
-      offset: 50,
-    },
-    shift: {
-      speed: 300,
-      easing: 'ease',
-    },
-    overlap: 150,
-  },
-};
+// import { HTTP_INTERCEPTORS } from '@angular/common/http';
+// import { AuthTokenInterceptor } from './services/AuthToken.interceptor';
+import { AuthEffects } from './components/authorization/state/authorization.effects';
+import { AppReducer } from './store/app.state';
+import { customNotifierOptions } from './shared/notifier.options';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, NotFoundComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     FontAwesomeModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
@@ -84,15 +42,25 @@ const customNotifierOptions: NotifierOptions = {
     RouterModule,
     SharedModule,
     AuthorizationModule,
-    StoreModule.forRoot({}),
+    AppRoutingModule,
+    EffectsModule.forRoot([]),
+    StoreModule.forRoot(AppReducer, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+      },
+    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
     }),
-    EffectsModule.forRoot([]),
   ],
   exports: [NotifierModule],
-  providers: [AuthGuard, FirebaseService, NotifierService],
+  providers: [
+    FirebaseService,
+    NotifierService,
+    // { provide: HTTP_INTERCEPTORS, useClass: AuthTokenInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

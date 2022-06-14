@@ -26,7 +26,7 @@ export interface Book {
   status: Status;
   note?: string;
   currentPage?: string;
-  doneYear?:string;
+  doneYear?: string;
 }
 
 export interface Movie {
