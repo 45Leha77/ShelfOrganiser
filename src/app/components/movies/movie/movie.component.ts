@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Movie, Genre } from 'src/app/models';
 import { EditedContentValidatorService } from 'src/app/services/validation/edited-content-validator.service';
@@ -18,7 +23,7 @@ import { getMovieById } from '../state/movies.selector';
   selector: 'app-movie',
   templateUrl: './movie.component.html',
   styleUrls: ['./movie.component.scss'],
-  providers: [EditedContentValidatorService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieComponent implements OnInit, OnDestroy {
   constructor(

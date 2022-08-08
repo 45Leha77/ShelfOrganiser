@@ -11,6 +11,7 @@ import {
   updateDoc,
   DocumentData,
   DocumentReference,
+  Firestore,
 } from 'firebase/firestore';
 import {
   getAuth,
@@ -22,6 +23,8 @@ import {
   UserCredential,
 } from 'firebase/auth';
 import { Book, Movie } from '../models';
+import { Auth } from '@angular/fire/auth';
+import { from, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,18 +32,22 @@ import { Book, Movie } from '../models';
 export class FirebaseService {
   constructor(public database: Database) {}
 
-  db = getFirestore();
-  auth = getAuth();
-  user = this.auth.currentUser;
+  db: Firestore = getFirestore();
+  auth: Auth = getAuth();
+  user: User | null = this.auth.currentUser;
 
-  getData(docs: string): Promise<Book[]> {
-    return getDocs(collection(this.db, docs)).then((snapshot) => {
-      let books: any[] = [];
-      snapshot.docs.forEach((doc) => {
-        books.push({ ...doc.data(), id: doc.id });
-      });
-      return books;
-    });
+  getData(docs: string): Observable<Book[]> {
+    let books: Observable<Book[]>;
+    books = from(
+      getDocs(collection(this.db, docs)).then((snapshot) => {
+        let books: any[] = [];
+        snapshot.docs.forEach((doc) => {
+          books.push({ ...doc.data(), id: doc.id });
+        });
+        return books;
+      })
+    );
+    return books;
   }
 
   getSingleDataItem(document: string, id: string): any {
@@ -54,21 +61,23 @@ export class FirebaseService {
   sendData(
     document: string,
     object: Book | Movie
-  ): Promise<DocumentReference<DocumentData>> {
+  ): Observable<DocumentReference<DocumentData>> {
     const colRef = collection(this.db, document);
-    return addDoc(colRef, object);
+    return from(addDoc(colRef, object));
   }
 
-  deleteData(document: string, id: string): any {
+  deleteData(document: string, id: string): Observable<void> {
     const docRef = doc(this.db, document, id);
-    return deleteDoc(docRef).catch((err) => {
-      console.log(err);
-    });
+    return from(
+      deleteDoc(docRef).catch((err) => {
+        console.log(err);
+      })
+    );
   }
 
-  updateData(document: string, id: string, obj: {}): Promise<any> {
+  updateData(document: string, id: string, obj: {}): Observable<any> {
     const docRef = doc(this.db, document, id);
-    return updateDoc(docRef, obj);
+    return from(updateDoc(docRef, obj));
   }
 
   // createUser(email: string, pass: string) {
@@ -83,7 +92,7 @@ export class FirebaseService {
   //     });
   // }
 
-  logOut() {
+  logOut(): void {
     signOut(this.auth)
       .then((cred) => {
         console.log('User is signed out', cred);
@@ -94,28 +103,32 @@ export class FirebaseService {
       });
   }
 
-  logIn(email: string, pass: string): Promise<UserCredential> {
-    return signInWithEmailAndPassword(this.auth, email, pass).then(
-      (cred: UserCredential): UserCredential => {
-        return cred;
-      }
+  logIn(email: string, pass: string): Observable<UserCredential> {
+    let credentials: Observable<UserCredential>;
+    credentials = from(
+      signInWithEmailAndPassword(this.auth, email, pass).then(
+        (cred: UserCredential): UserCredential => {
+          return cred;
+        }
+      )
     );
+    return credentials;
   }
 
-  setUserInLocalStorage(user: User) {
+  setUserInLocalStorage(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  getUserFromLocalStorage() {
+  getUserFromLocalStorage(): User | null {
     const userDataString = localStorage.getItem('user');
     if (userDataString) {
-      const user = JSON.parse(userDataString);
+      const user: User = JSON.parse(userDataString);
       return user;
     }
     return null;
   }
 
-  getAuthError(errCode: string) {
+  getAuthError(errCode: string): string {
     if (errCode == 'auth/user-not-found') {
       return 'Email does not exist';
     }

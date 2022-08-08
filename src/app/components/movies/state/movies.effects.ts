@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { NotifierService } from 'angular-notifier';
-import { from, map, mergeMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { map, mergeMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Movie } from 'src/app/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import {
@@ -39,7 +39,7 @@ export class MoviesEffects {
       withLatestFrom(this.store.select(getMovies)),
       mergeMap(([action, movies]) => {
         if (!movies.length) {
-          let observableData$ = from(this.firebaseService.getData('films'));
+          let observableData$ = this.firebaseService.getData('films');
           return observableData$.pipe(
             map((movies: Movie[]) => {
               return loadMoviesSuccess({ movies });
@@ -55,9 +55,11 @@ export class MoviesEffects {
     return this.actions$.pipe(
       ofType(addMovie),
       mergeMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.sendData('films', action.movie)
+        let observableData$ = this.firebaseService.sendData(
+          'films',
+          action.movie
         );
+
         return observableData$.pipe(
           map((data) => {
             this.router.navigate(['/movies/movie'], {
@@ -79,9 +81,11 @@ export class MoviesEffects {
     return this.actions$.pipe(
       ofType(deleteMovie),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.deleteData('films', action.id)
+        let observableData$ = this.firebaseService.deleteData(
+          'films',
+          action.id
         );
+
         return observableData$.pipe(
           map((data) => {
             return deleteMovieSuccess({ id: action.id });
@@ -95,13 +99,12 @@ export class MoviesEffects {
     return this.actions$.pipe(
       ofType(editMovie),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.updateData(
-            'films',
-            action.movie.id,
-            action.movie
-          )
+        let observableData$ = this.firebaseService.updateData(
+          'films',
+          action.movie.id,
+          action.movie
         );
+
         return observableData$.pipe(
           map((data) => {
             this.notifier.notify(
@@ -119,13 +122,12 @@ export class MoviesEffects {
     return this.actions$.pipe(
       ofType(startWatching),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.updateData(
-            'films',
-            action.movie.id,
-            action.movie
-          )
+        let observableData$ = this.firebaseService.updateData(
+          'films',
+          action.movie.id,
+          action.movie
         );
+
         return observableData$.pipe(
           map((data) => {
             this.notifier.notify(
@@ -143,13 +145,12 @@ export class MoviesEffects {
     return this.actions$.pipe(
       ofType(finishWatching),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.updateData(
-            'films',
-            action.movie.id,
-            action.movie
-          )
+        let observableData$ = this.firebaseService.updateData(
+          'films',
+          action.movie.id,
+          action.movie
         );
+
         return observableData$.pipe(
           map((data) => {
             this.notifier.notify(

@@ -1,10 +1,10 @@
-<div class="book-page">
+<div class="book-page" *ngIf="book$ | async as book">
   <div class="book-page__container">
     <div class="book-page__buttons">
       <button
         class="book-page__button start-button"
         type="button"
-        *ngIf="book?.status === 'wish'"
+        *ngIf="book.status === 'wish'"
         (click)="startReading()"
       >
         Start reading
@@ -12,7 +12,7 @@
       <button
         class="book-page__button finish-button"
         type="button"
-        *ngIf="book?.status === 'inProgress'"
+        *ngIf="book.status === 'inProgress'"
         (click)="finishReading()"
       >
         Finish reading
@@ -47,7 +47,7 @@
           (dblclick)="permitEdit($event)"
           (blur)="stopEditing($event, book.id, validator.isValidTitle($event))"
         >
-          {{ book?.title }}
+          {{ book.title }}
         </div>
         <span class="main-side__block-title">Description</span>
         <div
@@ -56,7 +56,7 @@
           (dblclick)="permitEdit($event)"
           (blur)="stopEditing($event, book.id)"
         >
-          {{ book?.description }}
+          {{ book.description }}
         </div>
         <span class="main-side__block-title">Website</span>
         <div
@@ -67,7 +67,7 @@
             stopEditing($event, book.id, validator.isValidWebsite($event))
           "
         >
-          <a href="{{ book?.website }}">{{ book?.website }}</a>
+          <a href="{{ book.website }}">{{ book.website }}</a>
         </div>
       </div>
       <div class="book-page__sub-side sub-side">
@@ -78,7 +78,7 @@
           (dblclick)="permitEdit($event)"
           (blur)="stopEditing($event, book.id, validator.isValidRating($event))"
         >
-          {{ book?.rating }}
+          {{ book.rating }}
         </div>
         <span class="sub-side__block-title">Year</span>
         <div
@@ -87,7 +87,7 @@
           (dblclick)="permitEdit($event)"
           (blur)="stopEditing($event, book.id, validator.isValidYear($event))"
         >
-          {{ book?.released }}
+          {{ book.released }}
         </div>
         <span class="sub-side__block-title">Genre</span>
         <select
@@ -100,7 +100,7 @@
           <option
             *ngFor="let genre of genres"
             value="{{ genre }}"
-            [selected]="genre === book?.genre"
+            [selected]="genre === book.genre"
           >
             {{ genre }}
           </option>
@@ -108,21 +108,19 @@
         <span class="sub-side__block-title">Status</span>
         <div
           class="sub-side__status text-center block-style"
-          *ngIf="book?.status"
+          *ngIf="book.status"
           [ngStyle]="{ 'background-color': getStatusBlockColor() }"
         >
-          <span *ngIf="book?.status === 'wish'">Wish</span>
-          <span *ngIf="book?.status === 'inProgress'">Reading now</span>
-          <span *ngIf="book?.status === 'finished'">Finished</span>
+          <span *ngIf="book.status === 'wish'">Wish</span>
+          <span *ngIf="book.status === 'inProgress'">Reading now</span>
+          <span *ngIf="book.status === 'finished'">Finished</span>
         </div>
-        <span
-          *ngIf="book?.status === 'inProgress'"
-          class="sub-side__block-title"
+        <span *ngIf="book.status === 'inProgress'" class="sub-side__block-title"
           >Current page</span
         >
         <div
           class="sub-side__page block-style text-center"
-          *ngIf="book?.status === 'inProgress'"
+          *ngIf="book.status === 'inProgress'"
           id="currentPage"
           (dblclick)="permitEdit($event)"
           (blur)="
@@ -131,12 +129,12 @@
         >
           {{ book.currentPage }}
         </div>
-        <span *ngIf="book?.status === 'finished'" class="sub-side__block-title"
+        <span *ngIf="book.status === 'finished'" class="sub-side__block-title"
           >Finished year</span
         >
         <div
           class="sub-side__page block-style text-center"
-          *ngIf="book?.status === 'finished'"
+          *ngIf="book.status === 'finished'"
           id="doneYear"
           (dblclick)="permitEdit($event)"
           (blur)="stopEditing($event, book.id, validator.isValidYear($event))"
@@ -156,6 +154,6 @@
 ></app-modal-window>
 <app-edit-book-form
   *ngIf="isEditing"
-  [id]="id"
+  [id]="book.id"
   (closeModal)="closeEditingForm()"
 ></app-edit-book-form>

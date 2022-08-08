@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -19,6 +20,7 @@ import { editBook } from '../state/books.actions';
   selector: 'app-edit-book-form',
   templateUrl: './edit-book-form.component.html',
   styleUrls: ['./edit-book-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditBookFormComponent implements OnInit, OnDestroy {
   constructor(

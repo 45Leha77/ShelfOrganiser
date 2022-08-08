@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 // import { NotifierService } from 'angular-notifier';
-import { UserCredential } from 'firebase/auth';
+import { User, UserCredential } from 'firebase/auth';
 import { from, map, exhaustMap, catchError, of, mergeMap, tap } from 'rxjs';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { AppState } from 'src/app/store/app.state';
@@ -71,7 +71,8 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(authAuto),
       mergeMap((action) => {
-        const user = this.firebaseService.getUserFromLocalStorage();
+        const user: User | null =
+          this.firebaseService.getUserFromLocalStorage()!;
         return of(authSuccess({ user, redirect: false }));
       })
     );

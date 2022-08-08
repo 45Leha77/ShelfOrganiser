@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { NotifierService } from 'angular-notifier';
-import { from, map, mergeMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { map, mergeMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Book } from 'src/app/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import {
@@ -39,7 +39,7 @@ export class BooksEffects {
       withLatestFrom(this.store.select(getBooks)),
       mergeMap(([action, books]) => {
         if (!books.length) {
-          let observableData$ = from(this.firebaseService.getData('books'));
+          let observableData$ = this.firebaseService.getData('books');
           return observableData$.pipe(
             map((books: Book[]) => {
               return loadBooksSuccess({ books });
@@ -55,8 +55,9 @@ export class BooksEffects {
     return this.actions$.pipe(
       ofType(addBook),
       mergeMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.sendData('books', action.book)
+        let observableData$ = this.firebaseService.sendData(
+          'books',
+          action.book
         );
         return observableData$.pipe(
           map((data) => {
@@ -79,9 +80,11 @@ export class BooksEffects {
     return this.actions$.pipe(
       ofType(deleteBook),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.deleteData('books', action.id)
+        let observableData$ = this.firebaseService.deleteData(
+          'books',
+          action.id
         );
+
         return observableData$.pipe(
           map((data) => {
             return deleteBookSuccess({ id: action.id });
@@ -95,9 +98,12 @@ export class BooksEffects {
     return this.actions$.pipe(
       ofType(editBook),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.updateData('books', action.book.id, action.book)
+        let observableData$ = this.firebaseService.updateData(
+          'books',
+          action.book.id,
+          action.book
         );
+
         return observableData$.pipe(
           map((data) => {
             this.notifier.notify(
@@ -115,9 +121,12 @@ export class BooksEffects {
     return this.actions$.pipe(
       ofType(startReading),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.updateData('books', action.book.id, action.book)
+        let observableData$ = this.firebaseService.updateData(
+          'books',
+          action.book.id,
+          action.book
         );
+
         return observableData$.pipe(
           map((data) => {
             this.notifier.notify(
@@ -135,9 +144,12 @@ export class BooksEffects {
     return this.actions$.pipe(
       ofType(finishReading),
       switchMap((action) => {
-        let observableData$ = from(
-          this.firebaseService.updateData('books', action.book.id, action.book)
+        let observableData$ = this.firebaseService.updateData(
+          'books',
+          action.book.id,
+          action.book
         );
+
         return observableData$.pipe(
           map((data) => {
             this.notifier.notify(

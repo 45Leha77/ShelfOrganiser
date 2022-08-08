@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -19,6 +20,7 @@ import { editMovie } from '../state/movies.actions';
   selector: 'app-edit-movie-form',
   templateUrl: './edit-movie-form.component.html',
   styleUrls: ['./edit-movie-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditMovieFormComponent implements OnInit, OnDestroy {
   constructor(

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { authAuto } from './components/authorization/state/authorization.actions';
@@ -9,13 +9,13 @@ import { AppState } from './store/app.state';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   isAuthenticated: Observable<boolean> = of(false);
-  constructor(private store: Store<AppState>) {
-    this.store.dispatch(authAuto());
-  }
+  constructor(private store: Store<AppState>) {}
   ngOnInit(): void {
     this.isAuthenticated = this.store.select(isAuthenticated);
+    this.store.dispatch(authAuto());
   }
 }

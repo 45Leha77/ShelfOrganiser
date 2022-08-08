@@ -5,8 +5,9 @@
       src="../../../assets/images/coverBackground2.jpg"
       alt="coverPhoto"
       class="books-page__background-photo"
+      loading="lazy"
     />
-    <div class="books-page__items">
+    <div class="books-page__items" *ngIf="books$ | async as books">
       <div class="books-page__item book" *ngFor="let book of books">
         <fa-icon
           class="book__delete-button"

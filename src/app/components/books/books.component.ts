@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Book } from 'src/app/models';
 import { faClose, faStar, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,12 +11,13 @@ import { Store } from '@ngrx/store';
 import { deleteBook, loadBooks } from './state/books.actions';
 import { getBooks } from './state/books.selector';
 import { FormControl, FormGroup } from '@angular/forms';
+import { filter, map, Observable, repeatWhen, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-books',
   templateUrl: './books.component.html',
   styleUrls: ['./books.component.scss'],
-  // encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BooksComponent implements OnInit, OnDestroy {
   constructor(
@@ -23,20 +29,20 @@ export class BooksComponent implements OnInit, OnDestroy {
   faStar = faStar;
   faPlus = faPlus;
 
-  allBooks: Book[] = [];
-  books: Book[] = [];
+  // allBooks: Book[] = [];
+  books$: Observable<Book[]> = this.store.select(getBooks);
 
   modalOpened = false;
   currentId!: string;
 
   filterForm!: FormGroup;
+  repeat$ = new Subject<void>();
 
-  loadBooksData() {
-    return this.store.select(getBooks).subscribe((books) => {
-      this.books = books;
-      this.allBooks = books;
-    });
-  }
+  // loadBooksData() {
+  //   return this.store.select(getBooks).subscribe((books) => {
+  //     this.allBooks = books;
+  //   });
+  // }
   cleanQueryParams() {
     return this.route.navigate([], {
       queryParams: {
@@ -47,12 +53,18 @@ export class BooksComponent implements OnInit, OnDestroy {
   }
   searchByRouterParams() {
     return this.activatedRoute.queryParams.subscribe((params) => {
+      this.repeat$.next();
       let searchValue = params['search'];
-      this.books = this.allBooks.filter((book: Book) => {
-        return searchValue
-          ? book.title.toLowerCase().match(`${searchValue.toLowerCase()}`)
-          : true;
-      });
+      this.books$.pipe(
+        map((books) => {
+          return books.filter((book: Book) => {
+            return searchValue
+              ? book.title.toLowerCase().match(`${searchValue.toLowerCase()}`)
+              : true;
+          });
+        }),
+        repeatWhen(() => this.repeat$)
+      );
     });
   }
 
@@ -62,21 +74,20 @@ export class BooksComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFilterFormStatusChange() {
-    return this.filterForm.get('status')?.valueChanges.subscribe((status) => {
-      this.books = this.allBooks.filter((book: Book) => {
-        return status == 'all' ? true : book.status === status;
-      });
-    });
-  }
+  // onFilterFormStatusChange() {
+  //   return this.filterForm.get('status')?.valueChanges.subscribe((status) => {
+  //     this.books = this.allBooks.filter((book: Book) => {
+  //       return status == 'all' ? true : book.status === status;
+  //     });
+  //   });
+  // }
 
   ngOnInit(): void {
     this.cleanQueryParams();
     this.searchByRouterParams();
     this.store.dispatch(loadBooks());
-    this.loadBooksData();
     this.createFilterForm();
-    this.onFilterFormStatusChange();
+    // this.onFilterFormStatusChange();
   }
 
   deleteBook(id: string) {
@@ -108,7 +119,6 @@ export class BooksComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.loadBooksData().unsubscribe();
-    this.searchByRouterParams().unsubscribe();
+    // this.searchByRouterParams().unsubscribe();
   }
 }

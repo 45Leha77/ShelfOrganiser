@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Book, Genre } from 'src/app/models';
 import { EditedContentValidatorService } from 'src/app/services/validation/edited-content-validator.service';
@@ -14,12 +19,14 @@ import {
 } from '../state/books.actions';
 import { getBookById } from '../state/books.selector';
 import { AppState } from 'src/app/store/app.state';
+import { Observable, tap } from 'rxjs';
 
 @Component({
   selector: 'app-book',
   templateUrl: './book.component.html',
   styleUrls: ['./book.component.scss'],
   providers: [EditedContentValidatorService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookComponent implements OnInit, OnDestroy {
   constructor(
@@ -31,6 +38,7 @@ export class BookComponent implements OnInit, OnDestroy {
 
   id!: string;
   book!: Book;
+  book$!: Observable<Book>;
 
   faClose = faClose;
   modalOpened = false;
@@ -42,15 +50,12 @@ export class BookComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.store.dispatch(loadBooks());
     this.id = this.route.snapshot.queryParams['id'];
-    this.loadBook(this.id);
+    this.book$ = this.store
+      .select(getBookById, { id: this.id })
+      .pipe(tap((book: Book) => (this.book = book)));
   }
   ngOnDestroy(): void {
-    this.loadBook(this.id).unsubscribe();
-  }
-  loadBook(id: string) {
-    return this.store.select(getBookById, { id }).subscribe((book) => {
-      this.book = book;
-    });
+    // this.loadBook(this.id).unsubscribe();
   }
   deleteBook(id: string) {
     this.store.dispatch(deleteBook({ id }));
